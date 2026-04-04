@@ -73,6 +73,8 @@ export async function sendAIMessage({
       reply: data.reply,
       model: data.model,
       usage: data.usage,
+      suggestions: data.suggestions || null,
+      fallback: data.fallback || false,
       latencyMs,
     };
   } catch (err) {

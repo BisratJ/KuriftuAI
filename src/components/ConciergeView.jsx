@@ -129,7 +129,7 @@ export default function ConciergeView() {
       });
 
       setLastLatency(result.latencyMs);
-      const aiMsg = { role: "ai", text: result.reply, ts: new Date() };
+      const aiMsg = { role: "ai", text: result.reply, suggestions: result.suggestions || null, ts: new Date() };
       setMessages((prev) => [...prev, aiMsg]);
 
       // TTS: speak the response if autoPlay is on or voice mode is active
@@ -255,17 +255,6 @@ export default function ConciergeView() {
                   </div>
                 )}
               </div>
-              <button
-                onClick={handleVoiceToggle}
-                className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border text-xs font-medium transition-all ${
-                  voiceMode
-                    ? "border-kuriftu-300 bg-kuriftu-50 text-kuriftu-700 shadow-sm"
-                    : "border-sand-200 bg-white text-sand-600 hover:bg-sand-50"
-                }`}
-              >
-                <span className={voiceListening ? "animate-pulse text-red-500" : ""}>{Icons.mic}</span>
-                <span className="hidden sm:inline">{voiceListening ? "Listening..." : voiceMode ? "Voice On" : "Voice"}</span>
-              </button>
             </div>
           </div>
         </div>
@@ -378,19 +367,32 @@ export default function ConciergeView() {
         {/* Input */}
         <div className="px-6 py-3 border-t border-sand-200 bg-white flex-shrink-0">
           <div className="flex gap-2">
+            <button
+              onClick={handleVoiceToggle}
+              className={`flex-shrink-0 w-10 h-10 rounded-xl flex items-center justify-center transition-all ${
+                voiceListening
+                  ? "bg-red-500 text-white animate-pulse"
+                  : voiceMode
+                  ? "bg-kuriftu-100 text-kuriftu-700 border border-kuriftu-300"
+                  : "bg-sand-50 text-sand-500 border border-sand-200 hover:bg-sand-100 hover:text-kuriftu-700"
+              }`}
+              title={voiceListening ? "Stop listening" : "Voice input"}
+            >
+              {Icons.mic}
+            </button>
             <input
               ref={inputRef}
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); handleSend(); } }}
-              placeholder="Ask me anything about Kuriftu..."
+              placeholder={voiceListening ? "Listening..." : "Ask me anything about Kuriftu..."}
               disabled={voiceListening}
               className="flex-1 px-4 py-2.5 rounded-xl border border-sand-200 text-sm bg-sand-50 text-kuriftu-900 focus:border-kuriftu-500 focus:bg-white transition-all disabled:opacity-50"
             />
             <button
               onClick={() => handleSend()}
               disabled={!input.trim() || isTyping}
-              className="px-4 py-2.5 rounded-xl bg-kuriftu-700 text-white flex items-center hover:bg-kuriftu-800 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+              className="flex-shrink-0 w-10 h-10 rounded-xl bg-kuriftu-700 text-white flex items-center justify-center hover:bg-kuriftu-800 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
             >
               {Icons.send}
             </button>
