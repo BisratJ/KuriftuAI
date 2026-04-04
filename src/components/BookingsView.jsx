@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Icons } from "./Icons";
 import MetricCard from "./MetricCard";
+import SearchInput from "./ui/SearchInput";
 import { BOOKINGS, AVAILABILITY_CALENDAR } from "@/lib/data";
 
 const STATUS_CONFIG = {
@@ -14,20 +15,51 @@ const STATUS_CONFIG = {
 
 export default function BookingsView() {
   const [statusFilter, setStatusFilter] = useState("all");
+  const [search, setSearch] = useState("");
+  const [sortField, setSortField] = useState(null);
+  const [sortDir, setSortDir] = useState("asc");
+  const [selectedBooking, setSelectedBooking] = useState(null);
 
-  const filtered = statusFilter === "all" ? BOOKINGS : BOOKINGS.filter((b) => b.status === statusFilter);
+  let filtered = statusFilter === "all" ? [...BOOKINGS] : BOOKINGS.filter((b) => b.status === statusFilter);
+  if (search) {
+    const q = search.toLowerCase();
+    filtered = filtered.filter((b) => b.guest.toLowerCase().includes(q) || b.id.toLowerCase().includes(q) || b.room.toLowerCase().includes(q));
+  }
+  if (sortField) {
+    filtered.sort((a, b) => {
+      const va = sortField === "amount" ? a.amount : a[sortField];
+      const vb = sortField === "amount" ? b.amount : b[sortField];
+      if (va < vb) return sortDir === "asc" ? -1 : 1;
+      if (va > vb) return sortDir === "asc" ? 1 : -1;
+      return 0;
+    });
+  }
+
+  const handleSort = (field) => {
+    if (sortField === field) { setSortDir(sortDir === "asc" ? "desc" : "asc"); }
+    else { setSortField(field); setSortDir("asc"); }
+  };
+
   const totalRevenue = BOOKINGS.reduce((sum, b) => sum + b.amount, 0);
   const checkedIn = BOOKINGS.filter((b) => b.status === "checked_in").length;
   const arriving = BOOKINGS.filter((b) => b.status === "confirmed").length;
 
+  const SortIcon = ({ field }) => (
+    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className={`inline ml-1 ${sortField === field ? "text-kuriftu-600" : "text-sand-300"}`}>
+      {sortDir === "desc" && sortField === field ? <path d="M12 5v14M19 12l-7 7-7-7"/> : <path d="M12 19V5M5 12l7-7 7 7"/>}
+    </svg>
+  );
+
   return (
-    <div className="p-8 max-w-[1200px] mx-auto">
-      <div className="mb-7">
-        <h1 className="text-[22px] font-semibold text-kuriftu-900 tracking-tight">Booking Management</h1>
-        <p className="text-sm text-sand-500 mt-1">Reservation orchestration, availability, and AI-optimized pricing</p>
+    <div className="p-6 lg:p-8 max-w-[1200px] mx-auto">
+      <div className="flex items-center justify-between mb-7">
+        <div>
+          <h1 className="text-[22px] font-semibold text-kuriftu-900 tracking-tight">Booking Management</h1>
+          <p className="text-sm text-sand-500 mt-1">Reservation orchestration, availability, and AI-optimized pricing</p>
+        </div>
       </div>
 
-      <div className="grid grid-cols-4 gap-4 mb-6">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4 mb-6">
         <MetricCard label="Active Bookings" value={BOOKINGS.length} change={12} />
         <MetricCard label="Checked In" value={checkedIn} />
         <MetricCard label="Arriving Soon" value={arriving} />
@@ -37,31 +69,41 @@ export default function BookingsView() {
       <div className="grid grid-cols-1 lg:grid-cols-[2fr_1fr] gap-4">
         {/* Bookings Table */}
         <div className="bg-white border border-sand-200 rounded-lg p-5">
-          <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center justify-between mb-3 gap-3">
             <div className="text-sm font-semibold text-kuriftu-900">Reservations</div>
-            <div className="flex gap-1.5">
-              {[{ id: "all", label: "All" }, { id: "checked_in", label: "Checked In" }, { id: "confirmed", label: "Arriving" }, { id: "checkout_today", label: "Checkout" }].map((f) => (
-                <button key={f.id} onClick={() => setStatusFilter(f.id)} className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${statusFilter === f.id ? "bg-kuriftu-700 text-white" : "bg-sand-50 text-sand-500 hover:bg-sand-100"}`}>
-                  {f.label}
-                </button>
-              ))}
-            </div>
+            <SearchInput value={search} onChange={setSearch} placeholder="Search guest, room..." className="w-52" />
+          </div>
+          <div className="flex gap-1.5 mb-4">
+            {[{ id: "all", label: "All", count: BOOKINGS.length }, { id: "checked_in", label: "Checked In", count: checkedIn }, { id: "confirmed", label: "Arriving", count: arriving }, { id: "checkout_today", label: "Checkout", count: BOOKINGS.filter(b => b.status === "checkout_today").length }].map((f) => (
+              <button key={f.id} onClick={() => setStatusFilter(f.id)} className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${statusFilter === f.id ? "bg-kuriftu-700 text-white" : "bg-sand-50 text-sand-500 hover:bg-sand-100"}`}>
+                {f.label} <span className="opacity-60 ml-0.5">{f.count}</span>
+              </button>
+            ))}
           </div>
 
           <div className="overflow-x-auto">
             <table className="w-full border-collapse text-[13px]">
               <thead>
                 <tr className="border-b border-sand-200">
-                  {["Booking", "Guest", "Room", "Check-in", "Check-out", "Status", "Amount"].map((h) => (
-                    <th key={h} className="text-left px-3 py-2 text-sand-500 font-medium text-xs">{h}</th>
-                  ))}
+                  <th className="text-left px-3 py-2 text-sand-500 font-medium text-xs">Booking</th>
+                  <th className="text-left px-3 py-2 text-sand-500 font-medium text-xs cursor-pointer select-none hover:text-kuriftu-600" onClick={() => handleSort("guest")}>Guest<SortIcon field="guest" /></th>
+                  <th className="text-left px-3 py-2 text-sand-500 font-medium text-xs">Room</th>
+                  <th className="text-left px-3 py-2 text-sand-500 font-medium text-xs cursor-pointer select-none hover:text-kuriftu-600" onClick={() => handleSort("checkIn")}>Check-in<SortIcon field="checkIn" /></th>
+                  <th className="text-left px-3 py-2 text-sand-500 font-medium text-xs">Status</th>
+                  <th className="text-left px-3 py-2 text-sand-500 font-medium text-xs cursor-pointer select-none hover:text-kuriftu-600" onClick={() => handleSort("amount")}>Amount<SortIcon field="amount" /></th>
                 </tr>
               </thead>
               <tbody>
-                {filtered.map((booking) => {
+                {filtered.length === 0 ? (
+                  <tr><td colSpan={6} className="text-center py-8 text-sand-400 text-sm">No bookings match your search</td></tr>
+                ) : filtered.map((booking) => {
                   const sc = STATUS_CONFIG[booking.status];
                   return (
-                    <tr key={booking.id} className="border-b border-sand-100 hover:bg-sand-50/50 transition-colors">
+                    <tr
+                      key={booking.id}
+                      onClick={() => setSelectedBooking(selectedBooking === booking.id ? null : booking.id)}
+                      className={`border-b border-sand-100 cursor-pointer transition-colors ${selectedBooking === booking.id ? "bg-kuriftu-50/60" : "hover:bg-sand-50/50"}`}
+                    >
                       <td className="px-3 py-2.5">
                         <span className="font-mono text-xs text-kuriftu-600 font-semibold">{booking.id}</span>
                       </td>
@@ -71,9 +113,8 @@ export default function BookingsView() {
                       </td>
                       <td className="px-3 py-2.5 text-sand-600">{booking.room}</td>
                       <td className="px-3 py-2.5 tabular-nums text-sand-600">{booking.checkIn}</td>
-                      <td className="px-3 py-2.5 tabular-nums text-sand-600">{booking.checkOut}</td>
                       <td className="px-3 py-2.5">
-                        <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold ${sc.bg} ${sc.text}`}>
+                        <span className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-semibold ${sc.bg} ${sc.text}`}>
                           <span className={`w-1.5 h-1.5 rounded-full ${sc.dot}`} />
                           {sc.label}
                         </span>
@@ -84,6 +125,10 @@ export default function BookingsView() {
                 })}
               </tbody>
             </table>
+          </div>
+          <div className="flex items-center justify-between mt-3 pt-3 border-t border-sand-100 text-[11px] text-sand-400">
+            <span>Showing {filtered.length} of {BOOKINGS.length} bookings</span>
+            <span className="tabular-nums font-semibold text-kuriftu-600">${filtered.reduce((s, b) => s + b.amount, 0).toLocaleString()} total</span>
           </div>
         </div>
 

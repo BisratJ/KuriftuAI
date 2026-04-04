@@ -1,7 +1,10 @@
 "use client";
 
+import { useState } from "react";
 import { Icons } from "./Icons";
 import MetricCard from "./MetricCard";
+import SearchInput from "./ui/SearchInput";
+import { useToast } from "./ui/Toast";
 import { CAMPAIGNS, LOYALTY_STATS } from "@/lib/data";
 
 const STATUS_STYLE = {
@@ -11,19 +14,30 @@ const STATUS_STYLE = {
 };
 
 export default function MarketingView() {
+  const [search, setSearch] = useState("");
+  const [campaignFilter, setCampaignFilter] = useState("all");
+  const { addToast } = useToast();
+
   const totalRevenue = CAMPAIGNS.reduce((s, c) => s + c.revenue, 0);
   const totalConverted = CAMPAIGNS.reduce((s, c) => s + c.converted, 0);
   const totalSent = CAMPAIGNS.reduce((s, c) => s + c.sent, 0);
   const avgOpen = totalSent > 0 ? Math.round((CAMPAIGNS.reduce((s, c) => s + c.opened, 0) / totalSent) * 100) : 0;
 
+  let filteredCampaigns = CAMPAIGNS;
+  if (campaignFilter !== "all") filteredCampaigns = filteredCampaigns.filter((c) => c.status === campaignFilter);
+  if (search) {
+    const q = search.toLowerCase();
+    filteredCampaigns = filteredCampaigns.filter((c) => c.name.toLowerCase().includes(q) || c.channel.toLowerCase().includes(q));
+  }
+
   return (
-    <div className="p-8 max-w-[1200px] mx-auto">
+    <div className="p-6 lg:p-8 max-w-[1200px] mx-auto">
       <div className="mb-7">
         <h1 className="text-[22px] font-semibold text-kuriftu-900 tracking-tight">Marketing &amp; Campaigns</h1>
         <p className="text-sm text-sand-500 mt-1">AI-optimized campaigns, cross-resort promotions, and loyalty engine</p>
       </div>
 
-      <div className="grid grid-cols-2 lg:grid-cols-5 gap-4 mb-6">
+      <div className="grid grid-cols-2 lg:grid-cols-5 gap-3 lg:gap-4 mb-6">
         <MetricCard label="Campaign Revenue" value={`${(totalRevenue / 1000).toFixed(1)}K`} prefix="$" change={24.5} />
         <MetricCard label="Total Conversions" value={totalConverted} change={18.3} />
         <MetricCard label="Avg Open Rate" value={`${avgOpen}%`} change={4.8} />
@@ -34,14 +48,29 @@ export default function MarketingView() {
       <div className="grid grid-cols-1 lg:grid-cols-[2fr_1fr] gap-4">
         {/* Campaigns Table */}
         <div className="bg-white border border-sand-200 rounded-lg p-5">
-          <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center justify-between mb-3 gap-3">
             <div className="text-sm font-semibold text-kuriftu-900">Campaign Performance</div>
-            <button className="px-3 py-1.5 rounded-lg bg-kuriftu-700 text-white text-xs font-medium hover:bg-kuriftu-800 transition-colors">
-              + New Campaign
-            </button>
+            <div className="flex items-center gap-2">
+              <SearchInput value={search} onChange={setSearch} placeholder="Search campaigns..." className="w-44" />
+              <button
+                onClick={() => addToast("New campaign draft created — configure in Campaign Builder", "ai")}
+                className="px-3 py-2 rounded-lg bg-kuriftu-700 text-white text-xs font-medium hover:bg-kuriftu-800 transition-colors whitespace-nowrap"
+              >
+                + New Campaign
+              </button>
+            </div>
+          </div>
+          <div className="flex gap-1.5 mb-4">
+            {[{id: "all", label: "All"}, {id: "active", label: "Active"}, {id: "scheduled", label: "Scheduled"}, {id: "completed", label: "Completed"}].map((f) => (
+              <button key={f.id} onClick={() => setCampaignFilter(f.id)} className={`px-2.5 py-1 rounded-lg text-[11px] font-medium transition-all ${campaignFilter === f.id ? "bg-kuriftu-700 text-white" : "bg-sand-50 text-sand-500 hover:bg-sand-100"}`}>
+                {f.label}
+              </button>
+            ))}
           </div>
           <div className="flex flex-col gap-3">
-            {CAMPAIGNS.map((campaign) => {
+            {filteredCampaigns.length === 0 ? (
+              <div className="text-center py-8 text-sand-400 text-sm">No campaigns match your filter</div>
+            ) : filteredCampaigns.map((campaign) => {
               const ss = STATUS_STYLE[campaign.status];
               const openRate = campaign.sent > 0 ? Math.round((campaign.opened / campaign.sent) * 100) : 0;
               const convRate = campaign.sent > 0 ? ((campaign.converted / campaign.sent) * 100).toFixed(1) : 0;

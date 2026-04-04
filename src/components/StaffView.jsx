@@ -1,7 +1,9 @@
 "use client";
 
+import { useState } from "react";
 import { Icons } from "./Icons";
 import MetricCard from "./MetricCard";
+import SearchInput from "./ui/SearchInput";
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
 } from "recharts";
@@ -14,18 +16,30 @@ const STATUS_STYLE = {
 };
 
 export default function StaffView() {
+  const [search, setSearch] = useState("");
+  const [statusFilter, setStatusFilter] = useState("all");
+
   const onDuty = STAFF_MEMBERS.filter((s) => s.status === "on_duty").length;
   const avgRating = (STAFF_MEMBERS.reduce((s, m) => s + m.rating, 0) / STAFF_MEMBERS.length).toFixed(1);
   const totalTasks = STAFF_MEMBERS.reduce((s, m) => s + m.tasksCompleted, 0);
 
+  let filteredStaff = STAFF_MEMBERS;
+  if (search) {
+    const q = search.toLowerCase();
+    filteredStaff = filteredStaff.filter((m) => m.name.toLowerCase().includes(q) || m.role.toLowerCase().includes(q) || m.department.toLowerCase().includes(q));
+  }
+  if (statusFilter !== "all") {
+    filteredStaff = filteredStaff.filter((m) => m.status === statusFilter);
+  }
+
   return (
-    <div className="p-8 max-w-[1200px] mx-auto">
+    <div className="p-6 lg:p-8 max-w-[1200px] mx-auto">
       <div className="mb-7">
         <h1 className="text-[22px] font-semibold text-kuriftu-900 tracking-tight">Staff Management</h1>
         <p className="text-sm text-sand-500 mt-1">AI-optimized scheduling, performance tracking, and workload balancing</p>
       </div>
 
-      <div className="grid grid-cols-2 lg:grid-cols-5 gap-4 mb-6">
+      <div className="grid grid-cols-2 lg:grid-cols-5 gap-3 lg:gap-4 mb-6">
         <MetricCard label="On Duty" value={`${onDuty}/${STAFF_MEMBERS.length}`} />
         <MetricCard label="Avg Rating" value={avgRating} change={2.1} />
         <MetricCard label="Tasks Today" value={totalTasks} change={8.5} />
@@ -36,7 +50,17 @@ export default function StaffView() {
       <div className="grid grid-cols-1 lg:grid-cols-[1.3fr_1fr] gap-4">
         {/* Staff Roster */}
         <div className="bg-white border border-sand-200 rounded-lg p-5">
-          <div className="text-sm font-semibold text-kuriftu-900 mb-4">Staff Roster</div>
+          <div className="flex items-center justify-between mb-3 gap-3">
+            <div className="text-sm font-semibold text-kuriftu-900">Staff Roster</div>
+            <SearchInput value={search} onChange={setSearch} placeholder="Search staff..." className="w-48" />
+          </div>
+          <div className="flex gap-1.5 mb-3">
+            {[{id: "all", label: "All"}, {id: "on_duty", label: "On Duty"}, {id: "off_duty", label: "Off Duty"}, {id: "on_break", label: "On Break"}].map((f) => (
+              <button key={f.id} onClick={() => setStatusFilter(f.id)} className={`px-2.5 py-1 rounded-lg text-[11px] font-medium transition-all ${statusFilter === f.id ? "bg-kuriftu-700 text-white" : "bg-sand-50 text-sand-500 hover:bg-sand-100"}`}>
+                {f.label}
+              </button>
+            ))}
+          </div>
           <div className="overflow-x-auto">
             <table className="w-full border-collapse text-[13px]">
               <thead>
@@ -47,7 +71,9 @@ export default function StaffView() {
                 </tr>
               </thead>
               <tbody>
-                {STAFF_MEMBERS.map((member) => {
+                {filteredStaff.length === 0 ? (
+                  <tr><td colSpan={6} className="text-center py-8 text-sand-400 text-sm">No staff match your search</td></tr>
+                ) : filteredStaff.map((member) => {
                   const ss = STATUS_STYLE[member.status];
                   return (
                     <tr key={member.id} className="border-b border-sand-100 hover:bg-sand-50/50 transition-colors">

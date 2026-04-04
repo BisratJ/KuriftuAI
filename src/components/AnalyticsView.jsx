@@ -31,7 +31,7 @@ export default function AnalyticsView() {
   const attrData = REVENUE_ATTRIBUTION.map((r) => ({ name: r.channel, value: r.revenue }));
 
   return (
-    <div className="p-8 max-w-[1200px] mx-auto">
+    <div className="p-6 lg:p-8 max-w-[1200px] mx-auto">
       <div className="mb-7">
         <h1 className="text-[22px] font-semibold text-kuriftu-900 tracking-tight">Analytics Center</h1>
         <p className="text-sm text-sand-500 mt-1">Enterprise KPIs, AI explainability, and revenue attribution</p>

@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Icons } from "./Icons";
 import MetricCard from "./MetricCard";
+import SearchInput from "./ui/SearchInput";
 import { GUEST_PROFILES, LOYALTY_TIERS } from "@/lib/data";
 
 const TIER_COLORS = {
@@ -29,15 +30,26 @@ const JOURNEY_COLORS = {
 export default function GuestProfilesView() {
   const [selectedGuest, setSelectedGuest] = useState(GUEST_PROFILES[0]);
   const [view, setView] = useState("profiles");
+  const [guestSearch, setGuestSearch] = useState("");
+  const [tierFilter, setTierFilter] = useState("all");
+
+  let filteredGuests = GUEST_PROFILES;
+  if (guestSearch) {
+    const q = guestSearch.toLowerCase();
+    filteredGuests = filteredGuests.filter((g) => g.name.toLowerCase().includes(q) || g.email.toLowerCase().includes(q));
+  }
+  if (tierFilter !== "all") {
+    filteredGuests = filteredGuests.filter((g) => g.tier === tierFilter);
+  }
 
   return (
-    <div className="p-8 max-w-[1200px] mx-auto">
+    <div className="p-6 lg:p-8 max-w-[1200px] mx-auto">
       <div className="mb-7">
         <h1 className="text-[22px] font-semibold text-kuriftu-900 tracking-tight">Guest Intelligence</h1>
         <p className="text-sm text-sand-500 mt-1">AI-powered CRM, guest journey tracking, and loyalty management</p>
       </div>
 
-      <div className="grid grid-cols-4 gap-4 mb-6">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4 mb-6">
         <MetricCard label="Total Guests" value="2,325" change={8.4} />
         <MetricCard label="Avg Lifetime Value" value="4.2K" prefix="$" change={12.1} />
         <MetricCard label="Retention Rate" value="78%" change={3.6} />
@@ -56,9 +68,22 @@ export default function GuestProfilesView() {
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_1.2fr] gap-4">
           {/* Guest List */}
           <div className="bg-white border border-sand-200 rounded-lg p-5">
-            <div className="text-sm font-semibold text-kuriftu-900 mb-4">Guest Directory</div>
-            <div className="flex flex-col gap-2">
-              {GUEST_PROFILES.map((guest) => (
+            <div className="flex items-center justify-between mb-3">
+              <div className="text-sm font-semibold text-kuriftu-900">Guest Directory</div>
+              <span className="text-[10px] text-sand-400">{filteredGuests.length} guests</span>
+            </div>
+            <SearchInput value={guestSearch} onChange={setGuestSearch} placeholder="Search guests..." className="mb-3" />
+            <div className="flex gap-1 mb-3">
+              {["all", "Platinum", "Gold", "Silver", "Bronze"].map((t) => (
+                <button key={t} onClick={() => setTierFilter(t)} className={`px-2 py-1 rounded text-[10px] font-medium transition-all ${tierFilter === t ? "bg-kuriftu-700 text-white" : "bg-sand-50 text-sand-500 hover:bg-sand-100"}`}>
+                  {t === "all" ? "All" : t}
+                </button>
+              ))}
+            </div>
+            <div className="flex flex-col gap-2 max-h-[480px] overflow-y-auto">
+              {filteredGuests.length === 0 ? (
+                <div className="text-center py-6 text-sand-400 text-sm">No guests found</div>
+              ) : filteredGuests.map((guest) => (
                 <button
                   key={guest.id}
                   onClick={() => setSelectedGuest(guest)}

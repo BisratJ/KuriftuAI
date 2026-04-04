@@ -1,7 +1,9 @@
 "use client";
 
+import { useState } from "react";
 import { Icons } from "./Icons";
 import MetricCard from "./MetricCard";
+import { useToast } from "./ui/Toast";
 import { SENTIMENT_DATA } from "@/lib/data";
 
 const FLAGGED_FEEDBACK = [
@@ -12,20 +14,29 @@ const FLAGGED_FEEDBACK = [
 ];
 
 export default function GuestInsightsView() {
+  const [feedback, setFeedback] = useState(FLAGGED_FEEDBACK);
+  const [resolvedIds, setResolvedIds] = useState(new Set());
+  const { addToast } = useToast();
+
+  const resolveFeedback = (idx) => {
+    setResolvedIds((prev) => new Set([...prev, idx]));
+    addToast("Feedback marked as resolved", "success");
+  };
+
   return (
-    <div className="p-8 max-w-[1200px] mx-auto">
+    <div className="p-6 lg:p-8 max-w-[1200px] mx-auto">
       <div className="mb-7">
         <h1 className="text-[22px] font-semibold text-kuriftu-900 tracking-tight">Guest Insights</h1>
         <p className="text-sm text-sand-500 mt-1">AI-driven sentiment analysis and guest intelligence</p>
       </div>
 
-      <div className="grid grid-cols-3 gap-4 mb-6">
+      <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 lg:gap-4 mb-6">
         <MetricCard label="Avg Rating" value="4.6" change={3.1} />
         <MetricCard label="Reviews Analyzed" value="1,702" change={15.3} />
         <MetricCard label="Response Rate" value="98%" change={2.1} />
       </div>
 
-      <div className="grid grid-cols-2 gap-4 mb-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-6">
         <div className="bg-white border border-sand-200 rounded-lg p-5">
           <div className="text-sm font-semibold text-kuriftu-900 mb-4">Sentiment by Category</div>
           <div className="flex flex-col gap-3">
@@ -54,17 +65,18 @@ export default function GuestInsightsView() {
         <div className="bg-white border border-sand-200 rounded-lg p-5">
           <div className="text-sm font-semibold text-kuriftu-900 mb-4">Recent AI-Flagged Feedback</div>
           <div className="flex flex-col gap-2.5">
-            {FLAGGED_FEEDBACK.map((item, i) => (
+            {feedback.map((item, i) => (
               <div
                 key={i}
-                className={`p-3 rounded-lg border ${
+                className={`p-3 rounded-lg border transition-all group ${
+                  resolvedIds.has(i) ? "opacity-50 border-sand-200 bg-sand-50" :
                   item.sentiment === "alert" ? "border-red-200 bg-red-50" :
                   item.sentiment === "positive" ? "border-green-200 bg-green-50" :
                   "border-yellow-200 bg-yellow-50"
                 }`}
               >
                 <div className="text-[13px] text-kuriftu-900 leading-relaxed mb-1.5">{item.text}</div>
-                <div className="flex gap-2 text-[11px]">
+                <div className="flex items-center gap-2 text-[11px]">
                   <span className={`px-2 py-0.5 rounded-lg font-medium ${
                     item.priority === "High" ? "bg-red-200 text-red-600" :
                     item.priority === "Opportunity" ? "bg-green-200 text-green-600" :
@@ -73,6 +85,13 @@ export default function GuestInsightsView() {
                     {item.priority}
                   </span>
                   <span className="text-sand-500">via {item.source}</span>
+                  <span className="ml-auto">
+                    {resolvedIds.has(i) ? (
+                      <span className="text-green-600 font-semibold text-[10px]">Resolved</span>
+                    ) : (
+                      <button onClick={() => resolveFeedback(i)} className="opacity-0 group-hover:opacity-100 transition-opacity text-kuriftu-600 font-semibold text-[10px] hover:text-kuriftu-800">Mark Resolved</button>
+                    )}
+                  </span>
                 </div>
               </div>
             ))}

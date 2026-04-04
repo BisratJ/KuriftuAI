@@ -1,4 +1,5 @@
 import "./globals.css";
+import { ToastWrapper } from "@/components/ui/ToastWrapper";
 
 export const metadata = {
   title: "KuriftuAI — Intelligent Hospitality",
@@ -16,7 +17,9 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body>
+        <ToastWrapper>{children}</ToastWrapper>
+      </body>
     </html>
   );
 }

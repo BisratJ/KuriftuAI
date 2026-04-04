@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Icons } from "./Icons";
+import { useToast } from "./ui/Toast";
 import { INTEGRATIONS, SYSTEM_ROLES, LOCATIONS } from "@/lib/data";
 
 const STATUS_COLORS = {
@@ -12,9 +13,20 @@ const STATUS_COLORS = {
 
 export default function SettingsView() {
   const [tab, setTab] = useState("integrations");
+  const [integrations, setIntegrations] = useState(INTEGRATIONS);
+  const { addToast } = useToast();
+
+  const toggleIntegration = (name) => {
+    setIntegrations((prev) => prev.map((i) => {
+      if (i.name !== name) return i;
+      const next = i.status === "connected" ? "disconnected" : "connected";
+      addToast(`${name} ${next === "connected" ? "connected" : "disconnected"} successfully`, next === "connected" ? "success" : "warning");
+      return { ...i, status: next, lastSync: next === "connected" ? "Just now" : "—" };
+    }));
+  };
 
   return (
-    <div className="p-8 max-w-[1200px] mx-auto">
+    <div className="p-6 lg:p-8 max-w-[1200px] mx-auto">
       <div className="mb-7">
         <h1 className="text-[22px] font-semibold text-kuriftu-900 tracking-tight">Settings &amp; Administration</h1>
         <p className="text-sm text-sand-500 mt-1">Multi-property configuration, integrations, roles, and security</p>
@@ -40,12 +52,12 @@ export default function SettingsView() {
               <div className="text-sm font-semibold text-kuriftu-900">Connected Systems</div>
               <div className="text-xs text-sand-500 mt-0.5">{INTEGRATIONS.filter((i) => i.status === "connected").length} of {INTEGRATIONS.length} integrations active</div>
             </div>
-            <button className="px-3 py-1.5 rounded-lg bg-kuriftu-700 text-white text-xs font-medium hover:bg-kuriftu-800 transition-colors">
+            <button onClick={() => addToast("Integration marketplace opened — select a provider to connect", "ai")} className="px-3 py-1.5 rounded-lg bg-kuriftu-700 text-white text-xs font-medium hover:bg-kuriftu-800 transition-colors">
               + Add Integration
             </button>
           </div>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
-            {INTEGRATIONS.map((integration) => {
+            {integrations.map((integration) => {
               const sc = STATUS_COLORS[integration.status];
               return (
                 <div key={integration.name} className={`flex items-center justify-between p-4 rounded-lg border transition-all ${integration.status === "connected" ? "border-sand-100 bg-sand-50/30" : integration.status === "disconnected" ? "border-red-100 bg-red-50/30" : "border-amber-100 bg-amber-50/30"}`}>
@@ -58,14 +70,22 @@ export default function SettingsView() {
                       <div className="text-[11px] text-sand-500">{integration.category}</div>
                     </div>
                   </div>
-                  <div className="text-right">
-                    <span className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-semibold ${sc.bg} ${sc.text}`}>
-                      <span className={`w-1.5 h-1.5 rounded-full ${sc.dot}`} />
-                      {integration.status}
-                    </span>
-                    <div className="text-[10px] text-sand-400 mt-1">
-                      {integration.lastSync !== "—" ? `Sync: ${integration.lastSync}` : "Not configured"}
+                  <div className="flex items-center gap-2">
+                    <div className="text-right">
+                      <span className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-semibold ${sc.bg} ${sc.text}`}>
+                        <span className={`w-1.5 h-1.5 rounded-full ${sc.dot}`} />
+                        {integration.status}
+                      </span>
+                      <div className="text-[10px] text-sand-400 mt-1">
+                        {integration.lastSync !== "—" ? `Sync: ${integration.lastSync}` : "Not configured"}
+                      </div>
                     </div>
+                    <button
+                      onClick={() => toggleIntegration(integration.name)}
+                      className={`w-9 h-5 rounded-full transition-colors relative flex-shrink-0 ${integration.status === "connected" ? "bg-green-500" : "bg-sand-300"}`}
+                    >
+                      <div className={`absolute top-0.5 w-4 h-4 rounded-full bg-white shadow transition-transform ${integration.status === "connected" ? "left-[18px]" : "left-0.5"}`} />
+                    </button>
                   </div>
                 </div>
               );
@@ -78,7 +98,7 @@ export default function SettingsView() {
         <div className="bg-white border border-sand-200 rounded-lg p-5">
           <div className="flex items-center justify-between mb-4">
             <div className="text-sm font-semibold text-kuriftu-900">Multi-Property Configuration</div>
-            <button className="px-3 py-1.5 rounded-lg bg-kuriftu-700 text-white text-xs font-medium hover:bg-kuriftu-800 transition-colors">
+            <button onClick={() => addToast("Property setup wizard opened", "info")} className="px-3 py-1.5 rounded-lg bg-kuriftu-700 text-white text-xs font-medium hover:bg-kuriftu-800 transition-colors">
               + Add Property
             </button>
           </div>
@@ -116,7 +136,7 @@ export default function SettingsView() {
               <div className="text-sm font-semibold text-kuriftu-900">Role-Based Access Control</div>
               <div className="text-xs text-sand-500 mt-0.5">Enterprise RBAC with granular permissions per module</div>
             </div>
-            <button className="px-3 py-1.5 rounded-lg bg-kuriftu-700 text-white text-xs font-medium hover:bg-kuriftu-800 transition-colors">
+            <button onClick={() => addToast("New role template created — configure permissions below", "ai")} className="px-3 py-1.5 rounded-lg bg-kuriftu-700 text-white text-xs font-medium hover:bg-kuriftu-800 transition-colors">
               + Add Role
             </button>
           </div>
@@ -146,7 +166,7 @@ export default function SettingsView() {
                       </div>
                     </td>
                     <td className="px-3 py-3">
-                      <button className="text-kuriftu-600 text-xs font-medium hover:text-kuriftu-800 transition-colors">Edit</button>
+                      <button onClick={() => addToast(`Editing ${role.role} role permissions`, "info")} className="text-kuriftu-600 text-xs font-medium hover:text-kuriftu-800 transition-colors">Edit</button>
                     </td>
                   </tr>
                 ))}

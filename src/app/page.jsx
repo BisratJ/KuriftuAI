@@ -126,19 +126,21 @@ export default function Home() {
 
       {/* Main content */}
       <div className="flex-1 overflow-y-auto bg-sand-50 scroll-smooth">
-        <main className="max-w-[1400px] mx-auto h-full min-h-screen">
-          {activeView === "dashboard" && <DashboardView />}
-          {activeView === "concierge" && <ConciergeView />}
-          {activeView === "bookings" && <BookingsView />}
-          {activeView === "revenue" && <RevenueView />}
-          {activeView === "guests" && <GuestInsightsView />}
-          {activeView === "profiles" && <GuestProfilesView />}
-          {activeView === "analytics" && <AnalyticsView />}
-          {activeView === "operations" && <OperationsView />}
-          {activeView === "staff" && <StaffView />}
-          {activeView === "smartrooms" && <SmartRoomsView />}
-          {activeView === "marketing" && <MarketingView />}
-          {activeView === "settings" && <SettingsView />}
+        <main className="max-w-[1400px] mx-auto h-full min-h-screen" key={activeView}>
+          <div className="view-transition">
+            {activeView === "dashboard" && <DashboardView />}
+            {activeView === "concierge" && <ConciergeView />}
+            {activeView === "bookings" && <BookingsView />}
+            {activeView === "revenue" && <RevenueView />}
+            {activeView === "guests" && <GuestInsightsView />}
+            {activeView === "profiles" && <GuestProfilesView />}
+            {activeView === "analytics" && <AnalyticsView />}
+            {activeView === "operations" && <OperationsView />}
+            {activeView === "staff" && <StaffView />}
+            {activeView === "smartrooms" && <SmartRoomsView />}
+            {activeView === "marketing" && <MarketingView />}
+            {activeView === "settings" && <SettingsView />}
+          </div>
         </main>
       </div>
     </div>
