@@ -4,13 +4,32 @@ import { useState, useCallback } from "react";
 import { Icons } from "./Icons";
 import MetricCard from "./MetricCard";
 import SearchInput from "./ui/SearchInput";
+import { useConfig } from "@/lib/config";
+import { generateInsights } from "@/lib/aiClient";
 import { STAFF_TASKS, MAINTENANCE_ALERTS, OPERATIONS_METRICS } from "@/lib/data";
 
 export default function OperationsView() {
+  const { config } = useConfig();
   const [taskFilter, setTaskFilter] = useState("all");
   const [search, setSearch] = useState("");
   const [tasks, setTasks] = useState(STAFF_TASKS);
   const [completedCount, setCompletedCount] = useState(STAFF_TASKS.filter(t => t.status === "completed").length);
+  const [opsInsight, setOpsInsight] = useState(null);
+  const [insightLoading, setInsightLoading] = useState(false);
+
+  const fetchOpsInsight = useCallback(async () => {
+    if (!config.features.aiOperationsInsights) return;
+    setInsightLoading(true);
+    try {
+      const result = await generateInsights({
+        prompt: config.ai.operationsPrompt,
+        data: { tasks: STAFF_TASKS, alerts: MAINTENANCE_ALERTS, metrics: OPERATIONS_METRICS },
+        module: "operations",
+      });
+      setOpsInsight(result.reply);
+    } catch { setOpsInsight(null); }
+    finally { setInsightLoading(false); }
+  }, [config]);
 
   let filteredTasks = taskFilter === "all"
     ? tasks
@@ -134,16 +153,31 @@ export default function OperationsView() {
           </div>
 
           <div className="bg-gradient-to-br from-kuriftu-700 to-kuriftu-800 rounded-lg p-5 text-white">
-            <div className="flex items-center gap-2 mb-3">
-              <span>{Icons.sparkle}</span>
-              <span className="text-sm font-semibold">AI Operations Summary</span>
+            <div className="flex items-center justify-between mb-3">
+              <div className="flex items-center gap-2">
+                <span>{Icons.sparkle}</span>
+                <span className="text-sm font-semibold">AI Operations Summary</span>
+              </div>
+              {config.features.aiOperationsInsights && (
+                <button
+                  onClick={fetchOpsInsight}
+                  disabled={insightLoading}
+                  className="px-2.5 py-1 rounded-lg bg-white/20 text-white text-[10px] font-semibold hover:bg-white/30 transition-colors disabled:opacity-50"
+                >
+                  {insightLoading ? "Analyzing..." : "Generate AI Analysis"}
+                </button>
+              )}
             </div>
-            <ul className="text-[12px] leading-relaxed space-y-2 opacity-90">
-              <li>12 tasks auto-generated from guest patterns and IoT data today</li>
-              <li>Pool pump alert requires immediate attention &mdash; dispatched to maintenance</li>
-              <li>Predicted 32% more housekeeping load for weekend &mdash; extra shift recommended</li>
-              <li>Average task response improved 12.5% vs last week</li>
-            </ul>
+            {opsInsight ? (
+              <div className="text-[12px] leading-relaxed opacity-90 whitespace-pre-line">{opsInsight}</div>
+            ) : (
+              <ul className="text-[12px] leading-relaxed space-y-2 opacity-90">
+                <li>{tasks.filter(t => t.aiGenerated).length} tasks auto-generated from guest patterns and IoT data today</li>
+                <li>Pool pump alert requires immediate attention &mdash; dispatched to maintenance</li>
+                <li>Predicted 32% more housekeeping load for weekend &mdash; extra shift recommended</li>
+                <li>Average task response improved 12.5% vs last week</li>
+              </ul>
+            )}
           </div>
         </div>
       </div>

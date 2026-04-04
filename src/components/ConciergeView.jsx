@@ -2,7 +2,10 @@
 
 import { useState, useEffect, useRef, useCallback } from "react";
 import { Icons } from "./Icons";
-import { CONCIERGE_RESPONSES } from "@/lib/data";
+import { useConfig } from "@/lib/config";
+import { sendAIMessage } from "@/lib/aiClient";
+import { startListening, stopListening, isSTTSupported, speak, stopSpeaking, isTTSSupported, LANGUAGE_MAP } from "@/lib/speech";
+import { GUEST_PROFILES } from "@/lib/data";
 
 const LANGUAGES = [
   { code: "en", label: "English", flag: "EN" },
@@ -13,10 +16,12 @@ const LANGUAGES = [
 ];
 
 const PROACTIVE_SUGGESTIONS = [
-  { text: "Book sunset boat tour — perfect weather!", icon: "🚤", full: "The sunset boat tour departs in 2 hours — perfect weather today! Shall I book?" },
-  { text: "Light lunch at 1:30PM before spa", icon: "🍽️", full: "Based on your spa booking at 3PM, I suggest a light lunch at Lakeside Cafe at 1:30PM." },
-  { text: "Coffee Ceremony at 4PM", icon: "☕", full: "Ethiopian Coffee Ceremony starts at 4PM — a guest favorite this season." },
+  { text: "Book sunset boat tour — perfect weather!", icon: "🚤", full: "I'd like to book the sunset boat tour. What's the schedule and price?" },
+  { text: "Light lunch before spa", icon: "🍽️", full: "Can you recommend a light lunch option before my spa appointment?" },
+  { text: "Coffee Ceremony at 4PM", icon: "☕", full: "Tell me about the Ethiopian Coffee Ceremony at 4PM." },
 ];
+
+const GREETING = "Welcome to Kuriftu Resort! I'm your AI concierge. I can help you with restaurant reservations, spa bookings, local activities, room service, and personalized recommendations. What would you like to explore today?";
 
 function detectIntent(messages) {
   const userMsgs = messages.filter((m) => m.role === "user").map((m) => m.text.toLowerCase());
@@ -39,13 +44,19 @@ function detectIntent(messages) {
 }
 
 export default function ConciergeView() {
+  const { config } = useConfig();
+  const guest = GUEST_PROFILES[0]; // Current guest context
+
   const [messages, setMessages] = useState([
-    { role: "ai", text: CONCIERGE_RESPONSES.greeting.text, suggestions: CONCIERGE_RESPONSES.greeting.suggestions, ts: new Date() },
+    { role: "ai", text: GREETING, suggestions: ["What dining options do you have?", "I'd like to book a spa treatment", "What activities are available?", "Tell me about local attractions"], ts: new Date() },
   ]);
   const [input, setInput] = useState("");
   const [isTyping, setIsTyping] = useState(false);
   const [voiceMode, setVoiceMode] = useState(false);
   const [voiceListening, setVoiceListening] = useState(false);
+  const [interimText, setInterimText] = useState("");
+  const [aiError, setAiError] = useState(null);
+  const [lastLatency, setLastLatency] = useState(null);
   const [language, setLanguage] = useState("en");
   const [showLangPicker, setShowLangPicker] = useState(false);
   const [sidePanel, setSidePanel] = useState("profile");
@@ -59,73 +70,139 @@ export default function ConciergeView() {
   }, [messages, isTyping]);
 
   useEffect(() => {
-    const handler = (e) => { if (showLangPicker) setShowLangPicker(false); };
+    const handler = () => { if (showLangPicker) setShowLangPicker(false); };
     document.addEventListener("click", handler);
     return () => document.removeEventListener("click", handler);
   }, [showLangPicker]);
 
-  const getResponse = useCallback((text) => {
-    const lower = text.toLowerCase();
-    if (lower.includes("dining") || lower.includes("restaurant") || lower.includes("food") || lower.includes("eat")) return CONCIERGE_RESPONSES.dining;
-    if (lower.includes("spa") || lower.includes("massage") || lower.includes("treatment") || lower.includes("wellness")) return CONCIERGE_RESPONSES.spa;
-    if (lower.includes("activit") || lower.includes("tour") || lower.includes("boat") || lower.includes("bird")) return CONCIERGE_RESPONSES.activities;
-    if (lower.includes("book") || lower.includes("3:00") || lower.includes("slot")) return CONCIERGE_RESPONSES.book_spa;
-    if (lower.includes("reserve") || lower.includes("tonight") || lower.includes("table") || lower.includes("yes")) return CONCIERGE_RESPONSES.reserve;
-    if (lower.includes("weather") || lower.includes("temperature")) return {
-      text: "It's a beautiful day in Bishoftu! Currently 26°C with clear skies — perfect for lakeside activities. The sunset today is at 6:42 PM, ideal for our boat tour. Shall I arrange something?",
-      suggestions: ["Book sunset tour", "Outdoor dining", "Lake activities"],
-    };
-    if (lower.includes("checkout") || lower.includes("check-out") || lower.includes("leave")) return {
-      text: "Your checkout is scheduled for Apr 7. I can arrange a late checkout (subject to availability) or help with airport transfer. We also offer express checkout — I'll have your bill ready at the front desk. Would you like any of these services?",
-      suggestions: ["Late checkout", "Airport transfer", "Express checkout", "View my bill"],
-    };
-    if (lower.includes("room service") || lower.includes("order")) return {
-      text: "I'd be happy to help with room service! Our kitchen is open until 10 PM. Today's specials include Doro Wot (Ethiopian chicken stew) and fresh Lake Bishoftu tilapia. Based on your past preferences, I think you'd enjoy our Ethiopian tasting platter. Shall I send the full menu to your room?",
-      suggestions: ["View full menu", "Order Ethiopian platter", "Dietary options", "Wine list"],
-    };
-    return {
-      text: "I'd be happy to help with that! At Kuriftu, we offer world-class dining, spa treatments, water activities, and cultural experiences. Based on your profile as a returning Gold member, I can offer personalized recommendations. What interests you most?",
-      suggestions: ["Dining options", "Spa treatments", "Activities & tours", "Room service"],
-    };
+  // Cleanup speech on unmount
+  useEffect(() => {
+    return () => { stopListening(); stopSpeaking(); };
   }, []);
 
-  const handleSend = useCallback((text) => {
+  const handleSend = useCallback(async (text) => {
     const msg = text || input;
     if (!msg.trim() || isTyping) return;
-    setMessages((prev) => [...prev, { role: "user", text: msg, ts: new Date() }]);
+
+    const userMsg = { role: "user", text: msg, ts: new Date() };
+    setMessages((prev) => [...prev, userMsg]);
     setInput("");
     setIsTyping(true);
     setVoiceListening(false);
+    setAiError(null);
+    stopListening();
 
-    const delay = 800 + Math.random() * 800;
-    setTimeout(() => {
-      const response = getResponse(msg);
-      setMessages((prev) => [...prev, { role: "ai", text: response.text, suggestions: response.suggestions, ts: new Date() }]);
+    try {
+      // Build conversation history for the AI
+      const history = [...messages, userMsg].map((m) => ({
+        role: m.role === "ai" ? "assistant" : m.role,
+        content: m.text,
+      }));
+
+      const guestContext = {
+        guestName: guest.name,
+        tier: guest.tier,
+        totalVisits: guest.totalVisits,
+        preferences: guest.preferences,
+        currentStay: "Apr 4-7, 2026",
+        room: "Lakeside Suite #12",
+        location: "Bishoftu",
+        language: LANGUAGES.find((l) => l.code === language)?.label || "English",
+      };
+
+      // Add language instruction if not English
+      let prompt = config.ai.conciergePrompt;
+      if (language !== "en") {
+        const langLabel = LANGUAGES.find((l) => l.code === language)?.label || "English";
+        prompt += `\n\nIMPORTANT: Respond in ${langLabel}. The guest prefers ${langLabel}.`;
+      }
+
+      const result = await sendAIMessage({
+        messages: history,
+        systemPrompt: prompt,
+        model: config.ai.model,
+        temperature: config.ai.temperature,
+        maxTokens: config.ai.maxTokens,
+        context: guestContext,
+        module: "concierge",
+        language,
+      });
+
+      setLastLatency(result.latencyMs);
+      const aiMsg = { role: "ai", text: result.reply, ts: new Date() };
+      setMessages((prev) => [...prev, aiMsg]);
+
+      // TTS: speak the response if autoPlay is on or voice mode is active
+      if (voiceMode && config.audio.ttsEnabled && isTTSSupported()) {
+        speak(result.reply, {
+          rate: config.audio.ttsRate,
+          pitch: config.audio.ttsPitch,
+          language: LANGUAGE_MAP[language] || "en-US",
+        });
+      }
+    } catch (err) {
+      setAiError(err.message);
+      // Fallback response when API is unavailable
+      setMessages((prev) => [...prev, {
+        role: "ai",
+        text: "I apologize, but I'm having trouble connecting to my AI service right now. Please try again in a moment, or I can help with basic information about Kuriftu Resort. Our front desk is also available 24/7 at extension 0.",
+        ts: new Date(),
+        isError: true,
+      }]);
+    } finally {
       setIsTyping(false);
-    }, delay);
-  }, [input, isTyping, getResponse]);
-
-  const handleVoiceToggle = () => {
-    if (!voiceMode) {
-      setVoiceMode(true);
-      setVoiceListening(true);
-      setTimeout(() => {
-        setVoiceListening(false);
-        const phrases = ["What spa treatments do you have?", "Book a table for dinner tonight", "What activities are available today?"];
-        const phrase = phrases[Math.floor(Math.random() * phrases.length)];
-        setInput(phrase);
-        inputRef.current?.focus();
-      }, 2500);
-    } else {
-      setVoiceMode(false);
-      setVoiceListening(false);
     }
-  };
+  }, [input, isTyping, messages, config, language, voiceMode, guest]);
+
+  const handleVoiceToggle = useCallback(() => {
+    if (voiceListening) {
+      stopListening();
+      setVoiceListening(false);
+      return;
+    }
+
+    if (!voiceMode) setVoiceMode(true);
+
+    if (!isSTTSupported()) {
+      setAiError("Speech recognition is not supported in this browser. Try Chrome or Edge.");
+      return;
+    }
+
+    setVoiceListening(true);
+    setInterimText("");
+
+    startListening({
+      language: LANGUAGE_MAP[language] || "en-US",
+      onResult: ({ final: finalText, interim }) => {
+        if (finalText) {
+          setInput(finalText);
+          setInterimText("");
+          setVoiceListening(false);
+          // Auto-send after speech recognition completes
+          setTimeout(() => {
+            inputRef.current?.focus();
+          }, 100);
+        } else if (interim) {
+          setInterimText(interim);
+        }
+      },
+      onError: (err) => {
+        setAiError(err);
+        setVoiceListening(false);
+      },
+      onEnd: () => {
+        setVoiceListening(false);
+      },
+    });
+  }, [voiceMode, voiceListening, language]);
 
   const handleClearChat = () => {
+    stopSpeaking();
     setMessages([
-      { role: "ai", text: CONCIERGE_RESPONSES.greeting.text, suggestions: CONCIERGE_RESPONSES.greeting.suggestions, ts: new Date() },
+      { role: "ai", text: GREETING, suggestions: ["What dining options do you have?", "I'd like to book a spa treatment", "What activities are available?", "Tell me about local attractions"], ts: new Date() },
     ]);
+    setAiError(null);
+    setLastLatency(null);
   };
 
   const currentLang = LANGUAGES.find((l) => l.code === language);
@@ -264,6 +341,17 @@ export default function ConciergeView() {
           )}
         </div>
 
+        {/* Error banner */}
+        {aiError && (
+          <div className="px-6 py-2 bg-red-50 border-t border-red-200 flex items-center gap-2 animate-fade-in flex-shrink-0">
+            <span className="text-red-500">{Icons.alert}</span>
+            <span className="text-[12px] text-red-700 flex-1">{aiError}</span>
+            <button onClick={() => setAiError(null)} className="text-red-400 hover:text-red-600 transition-colors">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </button>
+          </div>
+        )}
+
         {/* Voice listening overlay */}
         {voiceListening && (
           <div className="px-6 py-3 bg-kuriftu-50 border-t border-kuriftu-200 flex items-center justify-center gap-3 animate-fade-in flex-shrink-0">
@@ -273,11 +361,15 @@ export default function ConciergeView() {
                 {Icons.mic}
               </div>
             </div>
-            <div>
+            <div className="flex-1 min-w-0">
               <div className="text-sm font-medium text-kuriftu-900">Listening...</div>
-              <div className="text-[11px] text-sand-500">Speak naturally — I understand English, Amharic, and more</div>
+              {interimText ? (
+                <div className="text-[12px] text-kuriftu-700 font-medium italic truncate">&ldquo;{interimText}&rdquo;</div>
+              ) : (
+                <div className="text-[11px] text-sand-500">Speak naturally in {currentLang.label}</div>
+              )}
             </div>
-            <button onClick={() => { setVoiceListening(false); setVoiceMode(false); }} className="ml-auto px-3 py-1.5 rounded-lg border border-sand-200 text-xs text-sand-600 hover:bg-white transition-colors">
+            <button onClick={() => { stopListening(); setVoiceListening(false); }} className="ml-auto px-3 py-1.5 rounded-lg border border-sand-200 text-xs text-sand-600 hover:bg-white transition-colors">
               Cancel
             </button>
           </div>
@@ -304,8 +396,12 @@ export default function ConciergeView() {
             </button>
           </div>
           <div className="flex items-center justify-between mt-1.5 px-1">
-            <span className="text-[10px] text-sand-400">Powered by GPT-4 &middot; Context-aware &middot; {currentLang.label}</span>
-            <span className="text-[10px] text-sand-400">{messages.filter(m => m.role === "user").length} messages &middot; 2,400+ data points</span>
+            <span className="text-[10px] text-sand-400">Powered by {config.ai.model} &middot; Context-aware &middot; {currentLang.label}</span>
+            <span className="text-[10px] text-sand-400">
+              {messages.filter(m => m.role === "user").length} messages
+              {lastLatency ? ` · ${lastLatency}ms` : ""}
+              {voiceMode ? " · 🎙 Voice" : ""}
+            </span>
           </div>
         </div>
       </div>
@@ -427,12 +523,12 @@ export default function ConciergeView() {
                   <div className="text-[10px] font-bold text-sand-400 uppercase tracking-wider mb-1.5">Model Info</div>
                   <div className="flex flex-col gap-1 text-[11px]">
                     {[
-                      { label: "Model", value: "GPT-4 Turbo" },
-                      { label: "Temp", value: "0.7" },
-                      { label: "Context Window", value: "8K tokens" },
-                      { label: "Knowledge", value: "2,400+ entries" },
+                      { label: "Model", value: config.ai.model },
+                      { label: "Temperature", value: config.ai.temperature },
+                      { label: "Max Tokens", value: config.ai.maxTokens },
                       { label: "Language", value: currentLang.label },
-                      { label: "Latency", value: `~${(800 + Math.random() * 400).toFixed(0)}ms` },
+                      { label: "Voice", value: voiceMode ? "Active" : "Off" },
+                      { label: "Last Latency", value: lastLatency ? `${lastLatency}ms` : "—" },
                     ].map((item, i) => (
                       <div key={i} className="flex justify-between py-1 border-b border-sand-100">
                         <span className="text-sand-400">{item.label}</span>

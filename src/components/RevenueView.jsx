@@ -1,14 +1,34 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import MetricCard from "./MetricCard";
+import { Icons } from "./Icons";
 import { useToast } from "./ui/Toast";
+import { useConfig } from "@/lib/config";
+import { generateInsights } from "@/lib/aiClient";
 import { DYNAMIC_PRICING, UPSELL_OPPORTUNITIES } from "@/lib/data";
 
 export default function RevenueView() {
+  const { config } = useConfig();
   const [approvedPrices, setApprovedPrices] = useState({});
   const [actedUpsells, setActedUpsells] = useState({});
+  const [revInsight, setRevInsight] = useState(null);
+  const [insightLoading, setInsightLoading] = useState(false);
   const { addToast } = useToast();
+
+  const fetchRevInsight = useCallback(async () => {
+    if (!config.features.aiRevenueInsights) return;
+    setInsightLoading(true);
+    try {
+      const result = await generateInsights({
+        prompt: config.ai.revenuePrompt,
+        data: { pricing: DYNAMIC_PRICING, upsells: UPSELL_OPPORTUNITIES },
+        module: "revenue",
+      });
+      setRevInsight(result.reply);
+    } catch { setRevInsight(null); }
+    finally { setInsightLoading(false); }
+  }, [config]);
 
   const approvePrice = (type) => {
     setApprovedPrices((p) => ({ ...p, [type]: true }));
@@ -32,6 +52,30 @@ export default function RevenueView() {
         <MetricCard label="AI Upsell Conversion" value="34%" change={18.2} />
         <MetricCard label="RevPAR" value="112" prefix="$" change={8.7} />
       </div>
+
+      {/* AI Revenue Insights */}
+      {config.features.aiRevenueInsights && (
+        <div className="bg-gradient-to-r from-kuriftu-50 to-sand-50 border border-kuriftu-200 rounded-lg p-5 mb-4">
+          <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center gap-2">
+              <span className="text-kuriftu-500">{Icons.sparkle}</span>
+              <span className="text-sm font-semibold text-kuriftu-900">AI Revenue Analysis</span>
+            </div>
+            <button
+              onClick={fetchRevInsight}
+              disabled={insightLoading}
+              className="px-3 py-1.5 rounded-lg bg-kuriftu-700 text-white text-xs font-semibold hover:bg-kuriftu-800 transition-colors disabled:opacity-50 flex items-center gap-1.5"
+            >
+              {insightLoading ? "Analyzing..." : "Generate Analysis"}
+            </button>
+          </div>
+          {revInsight ? (
+            <div className="text-[13px] text-kuriftu-900 leading-relaxed whitespace-pre-line bg-white/60 rounded-lg p-4 border border-kuriftu-100">{revInsight}</div>
+          ) : (
+            <div className="text-[12px] text-sand-500 italic">Click to generate AI-powered revenue optimization recommendations.</div>
+          )}
+        </div>
+      )}
 
       {/* Dynamic Pricing */}
       <div className="bg-white border border-sand-200 rounded-lg p-5 mb-4">

@@ -14,6 +14,7 @@ import StaffView from "@/components/StaffView";
 import AnalyticsView from "@/components/AnalyticsView";
 import MarketingView from "@/components/MarketingView";
 import SettingsView from "@/components/SettingsView";
+import AdminView from "@/components/AdminView";
 import LoginView from "@/components/LoginView";
 
 const NAV_SECTIONS = [
@@ -47,6 +48,7 @@ const NAV_SECTIONS = [
     items: [
       { id: "marketing", label: "Marketing", icon: Icons.marketing },
       { id: "settings", label: "Settings", icon: Icons.settings },
+      { id: "admin", label: "Admin Panel", icon: Icons.shield },
     ],
   },
 ];
@@ -140,6 +142,7 @@ export default function Home() {
             {activeView === "smartrooms" && <SmartRoomsView />}
             {activeView === "marketing" && <MarketingView />}
             {activeView === "settings" && <SettingsView />}
+            {activeView === "admin" && <AdminView />}
           </div>
         </main>
       </div>

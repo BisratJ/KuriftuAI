@@ -8,6 +8,8 @@ import {
 import { Icons } from "./Icons";
 import MetricCard from "./MetricCard";
 import LocationCard from "./LocationCard";
+import { useConfig } from "@/lib/config";
+import { generateInsights } from "@/lib/aiClient";
 import {
   LOCATIONS, REVENUE_DATA, GUEST_SEGMENTS, OCCUPANCY_FORECAST,
 } from "@/lib/data";
@@ -26,10 +28,35 @@ const EXTRA_ALERTS = [
 ];
 
 export default function DashboardView() {
+  const { config } = useConfig();
   const [selectedProperty, setSelectedProperty] = useState("all");
   const [alerts, setAlerts] = useState(INITIAL_ALERTS);
   const [lastRefresh, setLastRefresh] = useState(new Date());
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const [aiInsight, setAiInsight] = useState(null);
+  const [insightLoading, setInsightLoading] = useState(false);
+
+  const fetchInsight = useCallback(async () => {
+    if (!config.features.aiDashboardInsights) return;
+    setInsightLoading(true);
+    try {
+      const result = await generateInsights({
+        prompt: config.ai.dashboardPrompt,
+        data: {
+          locations: LOCATIONS.map((l) => ({ name: l.name, occupancy: l.occupancy, revenue: l.revenue, rating: l.rating })),
+          revenueByMonth: REVENUE_DATA,
+          guestSegments: GUEST_SEGMENTS,
+          forecast: OCCUPANCY_FORECAST,
+        },
+        module: "dashboard",
+      });
+      setAiInsight(result.reply);
+    } catch {
+      setAiInsight(null);
+    } finally {
+      setInsightLoading(false);
+    }
+  }, [config]);
 
   const handleRefresh = useCallback(() => {
     setIsRefreshing(true);
@@ -123,6 +150,34 @@ export default function DashboardView() {
           </div>
         )}
       </div>
+
+      {/* AI Insights Panel */}
+      {config.features.aiDashboardInsights && (
+        <div className="bg-gradient-to-r from-kuriftu-50 to-sand-50 border border-kuriftu-200 rounded-lg p-5 mb-6">
+          <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center gap-2">
+              <span className="text-kuriftu-500">{Icons.sparkle}</span>
+              <span className="text-sm font-semibold text-kuriftu-900">AI Business Insights</span>
+            </div>
+            <button
+              onClick={fetchInsight}
+              disabled={insightLoading}
+              className="px-3 py-1.5 rounded-lg bg-kuriftu-700 text-white text-xs font-semibold hover:bg-kuriftu-800 transition-colors disabled:opacity-50 flex items-center gap-1.5"
+            >
+              {insightLoading ? (
+                <><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="animate-spin"><circle cx="12" cy="12" r="10" strokeDasharray="30 10"/></svg> Analyzing...</>
+              ) : (
+                <>{Icons.sparkle} Generate Insights</>
+              )}
+            </button>
+          </div>
+          {aiInsight ? (
+            <div className="text-[13px] text-kuriftu-900 leading-relaxed whitespace-pre-line bg-white/60 rounded-lg p-4 border border-kuriftu-100">{aiInsight}</div>
+          ) : (
+            <div className="text-[12px] text-sand-500 italic">Click &ldquo;Generate Insights&rdquo; to get AI-powered analysis of your operational data.</div>
+          )}
+        </div>
+      )}
 
       <div className="grid grid-cols-1 lg:grid-cols-[2fr_1fr] gap-4 mb-6">
         <div className="bg-white border border-sand-200 rounded-lg p-5">
