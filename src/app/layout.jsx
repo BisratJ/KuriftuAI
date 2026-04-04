@@ -5,7 +5,9 @@ export const metadata = {
   title: "KuriftuAI — Intelligent Hospitality",
   description: "AI-powered hospitality management platform for Kuriftu Resort & Spa. Dashboard, AI Concierge, Revenue Intelligence, and Guest Insights.",
   icons: {
-    icon: "/favicon.ico",
+    icon: "/kuriftu-logo.png",
+    shortcut: "/kuriftu-logo.png",
+    apple: "/kuriftu-logo.png",
   },
   openGraph: {
     title: "KuriftuAI — Intelligent Hospitality",

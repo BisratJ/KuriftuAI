@@ -15,7 +15,7 @@ import AnalyticsView from "@/components/AnalyticsView";
 import MarketingView from "@/components/MarketingView";
 import SettingsView from "@/components/SettingsView";
 import AdminView from "@/components/AdminView";
-import LoginView from "@/components/LoginView";
+import LandingPage from "@/components/LandingPage";
 
 const NAV_SECTIONS = [
   {
@@ -57,8 +57,13 @@ export default function Home() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [activeView, setActiveView] = useState("dashboard");
 
+  const handleLogin = (targetView = "dashboard") => {
+    setActiveView(targetView);
+    setIsLoggedIn(true);
+  };
+
   if (!isLoggedIn) {
-    return <LoginView onLogin={() => setIsLoggedIn(true)} />;
+    return <LandingPage onLogin={handleLogin} />;
   }
 
   return (
@@ -67,9 +72,7 @@ export default function Home() {
       <div className="w-[240px] bg-white border-r border-sand-200 flex flex-col flex-shrink-0 shadow-sm z-10">
         <div className="p-6 border-b border-sand-200">
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-kuriftu-700 to-kuriftu-500 flex items-center justify-center text-white font-bold text-sm shadow-md shadow-kuriftu-700/20">
-              K
-            </div>
+            <img src="/kuriftu-logo.png" alt="KuriftuAI" className="w-9 h-9 object-contain mix-blend-screen" />
             <div>
               <div className="font-bold text-[15px] text-kuriftu-900 tracking-tight">KuriftuAI</div>
               <div className="text-[11px] text-sand-500">Enterprise Platform</div>
