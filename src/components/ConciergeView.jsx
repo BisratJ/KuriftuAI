@@ -57,6 +57,7 @@ export default function ConciergeView() {
   const [interimText, setInterimText] = useState("");
   const [aiError, setAiError] = useState(null);
   const [lastLatency, setLastLatency] = useState(null);
+  const [readingMsgIdx, setReadingMsgIdx] = useState(null);
   const [language, setLanguage] = useState("en");
   const [showLangPicker, setShowLangPicker] = useState(false);
   const [sidePanel, setSidePanel] = useState("profile");
@@ -131,15 +132,6 @@ export default function ConciergeView() {
       setLastLatency(result.latencyMs);
       const aiMsg = { role: "ai", text: result.reply, suggestions: result.suggestions || null, ts: new Date() };
       setMessages((prev) => [...prev, aiMsg]);
-
-      // TTS: speak the response if autoPlay is on or voice mode is active
-      if (voiceMode && config.audio.ttsEnabled && isTTSSupported()) {
-        speak(result.reply, {
-          rate: config.audio.ttsRate,
-          pitch: config.audio.ttsPitch,
-          language: LANGUAGE_MAP[language] || "en-US",
-        });
-      }
     } catch (err) {
       setAiError(err.message);
       // Fallback response when API is unavailable
@@ -198,12 +190,35 @@ export default function ConciergeView() {
 
   const handleClearChat = () => {
     stopSpeaking();
+    setReadingMsgIdx(null);
     setMessages([
       { role: "ai", text: GREETING, suggestions: ["What dining options do you have?", "I'd like to book a spa treatment", "What activities are available?", "Tell me about local attractions"], ts: new Date() },
     ]);
     setAiError(null);
     setLastLatency(null);
   };
+
+  const handleReadAloud = useCallback((text, msgIdx) => {
+    if (!isTTSSupported()) {
+      setAiError("Text-to-speech is not supported in this browser.");
+      return;
+    }
+    // If already reading this message, stop it
+    if (readingMsgIdx === msgIdx) {
+      stopSpeaking();
+      setReadingMsgIdx(null);
+      return;
+    }
+    // Stop any current speech and start new
+    stopSpeaking();
+    setReadingMsgIdx(msgIdx);
+    speak(text, {
+      rate: config.audio.ttsRate,
+      pitch: config.audio.ttsPitch,
+      language: LANGUAGE_MAP[language] || "en-US",
+      onEnd: () => setReadingMsgIdx(null),
+    });
+  }, [readingMsgIdx, config.audio, language]);
 
   const currentLang = LANGUAGES.find((l) => l.code === language);
   const context = detectIntent(messages);
@@ -309,9 +324,29 @@ export default function ConciergeView() {
                     </div>
                   )}
                 </div>
-                <span className={`text-[10px] text-sand-400 mt-1 ${msg.role === "user" ? "text-right" : "text-left"}`}>
-                  {formatTime(msg.ts)}
-                </span>
+                <div className={`flex items-center gap-2 mt-1 ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
+                  <span className="text-[10px] text-sand-400">{formatTime(msg.ts)}</span>
+                  {msg.role === "ai" && !msg.isError && (
+                    <button
+                      onClick={() => handleReadAloud(msg.text, i)}
+                      className={`flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium transition-all ${
+                        readingMsgIdx === i
+                          ? "bg-kuriftu-100 text-kuriftu-700 border border-kuriftu-300"
+                          : "text-sand-400 hover:text-kuriftu-600 hover:bg-sand-100"
+                      }`}
+                      title={readingMsgIdx === i ? "Stop reading" : "Read aloud"}
+                    >
+                      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                        {readingMsgIdx === i ? (
+                          <><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></>
+                        ) : (
+                          <><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></>
+                        )}
+                      </svg>
+                      {readingMsgIdx === i ? "Stop" : "Read Aloud"}
+                    </button>
+                  )}
+                </div>
               </div>
             </div>
           ))}
@@ -402,7 +437,7 @@ export default function ConciergeView() {
             <span className="text-[10px] text-sand-400">
               {messages.filter(m => m.role === "user").length} messages
               {lastLatency ? ` · ${lastLatency}ms` : ""}
-              {voiceMode ? " · 🎙 Voice" : ""}
+              {readingMsgIdx !== null ? " · 🔊 Reading" : ""}
             </span>
           </div>
         </div>

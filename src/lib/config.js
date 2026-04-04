@@ -32,7 +32,7 @@ Guidelines:
     marketingPrompt: `You are an AI marketing strategist for Kuriftu Resort & Spa. Analyze campaign performance data and provide recommendations for optimization, audience targeting, and new campaign ideas. Focus on ROI and conversion improvements.`,
   },
   audio: {
-    ttsEnabled: true,
+    ttsEnabled: false,
     ttsVoice: "default",
     ttsRate: 1.0,
     ttsPitch: 1.0,
