@@ -1,9 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { Icons } from "./Icons";
 import MetricCard from "./MetricCard";
 import { useToast } from "./ui/Toast";
+import { useConfig } from "@/lib/config";
+import { generateInsights } from "@/lib/aiClient";
 import { SENTIMENT_DATA } from "@/lib/data";
 
 const FLAGGED_FEEDBACK = [
@@ -14,9 +16,25 @@ const FLAGGED_FEEDBACK = [
 ];
 
 export default function GuestInsightsView() {
+  const { config } = useConfig();
   const [feedback, setFeedback] = useState(FLAGGED_FEEDBACK);
   const [resolvedIds, setResolvedIds] = useState(new Set());
+  const [guestInsight, setGuestInsight] = useState(null);
+  const [insightLoading, setInsightLoading] = useState(false);
   const { addToast } = useToast();
+
+  const fetchGuestInsight = useCallback(async () => {
+    setInsightLoading(true);
+    try {
+      const result = await generateInsights({
+        prompt: "You are an AI guest experience analyst for Kuriftu Resort & Spa. Analyze guest sentiment data and flagged feedback. Provide actionable recommendations to improve guest satisfaction, address complaints, and capitalize on positive trends. Be specific and concise.",
+        data: { sentimentByCategory: SENTIMENT_DATA, flaggedFeedback: FLAGGED_FEEDBACK },
+        module: "guest-insights",
+      });
+      setGuestInsight(result.reply);
+    } catch { setGuestInsight(null); }
+    finally { setInsightLoading(false); }
+  }, [config]);
 
   const resolveFeedback = (idx) => {
     setResolvedIds((prev) => new Set([...prev, idx]));
@@ -34,6 +52,28 @@ export default function GuestInsightsView() {
         <MetricCard label="Avg Rating" value="4.6" change={3.1} />
         <MetricCard label="Reviews Analyzed" value="1,702" change={15.3} />
         <MetricCard label="Response Rate" value="98%" change={2.1} />
+      </div>
+
+      {/* AI Guest Insights */}
+      <div className="bg-gradient-to-r from-kuriftu-50 to-sand-50 border border-kuriftu-200 rounded-lg p-5 mb-6">
+        <div className="flex items-center justify-between mb-3">
+          <div className="flex items-center gap-2">
+            <span className="text-kuriftu-500">{Icons.sparkle}</span>
+            <span className="text-sm font-semibold text-kuriftu-900">AI Guest Experience Analysis</span>
+          </div>
+          <button
+            onClick={fetchGuestInsight}
+            disabled={insightLoading}
+            className="px-3 py-1.5 rounded-lg bg-kuriftu-700 text-white text-xs font-semibold hover:bg-kuriftu-800 transition-colors disabled:opacity-50"
+          >
+            {insightLoading ? "Analyzing..." : "Analyze Feedback"}
+          </button>
+        </div>
+        {guestInsight ? (
+          <div className="text-[13px] text-kuriftu-900 leading-relaxed whitespace-pre-line bg-white/60 rounded-lg p-4 border border-kuriftu-100">{guestInsight}</div>
+        ) : (
+          <div className="text-[12px] text-sand-500 italic">Click to generate AI analysis of guest sentiment and feedback trends.</div>
+        )}
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-6">

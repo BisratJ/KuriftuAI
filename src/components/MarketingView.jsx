@@ -1,10 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { Icons } from "./Icons";
 import MetricCard from "./MetricCard";
 import SearchInput from "./ui/SearchInput";
 import { useToast } from "./ui/Toast";
+import { useConfig } from "@/lib/config";
+import { generateInsights } from "@/lib/aiClient";
 import { CAMPAIGNS, LOYALTY_STATS } from "@/lib/data";
 
 const STATUS_STYLE = {
@@ -14,9 +16,26 @@ const STATUS_STYLE = {
 };
 
 export default function MarketingView() {
+  const { config } = useConfig();
   const [search, setSearch] = useState("");
   const [campaignFilter, setCampaignFilter] = useState("all");
+  const [mktInsight, setMktInsight] = useState(null);
+  const [insightLoading, setInsightLoading] = useState(false);
   const { addToast } = useToast();
+
+  const fetchMktInsight = useCallback(async () => {
+    if (!config.features.aiMarketingInsights) return;
+    setInsightLoading(true);
+    try {
+      const result = await generateInsights({
+        prompt: config.ai.marketingPrompt,
+        data: { campaigns: CAMPAIGNS, loyaltyStats: LOYALTY_STATS },
+        module: "marketing",
+      });
+      setMktInsight(result.reply);
+    } catch { setMktInsight(null); }
+    finally { setInsightLoading(false); }
+  }, [config]);
 
   const totalRevenue = CAMPAIGNS.reduce((s, c) => s + c.revenue, 0);
   const totalConverted = CAMPAIGNS.reduce((s, c) => s + c.converted, 0);
@@ -44,6 +63,30 @@ export default function MarketingView() {
         <MetricCard label="Active Campaigns" value={CAMPAIGNS.filter((c) => c.status === "active").length} />
         <MetricCard label="Loyalty Members" value={LOYALTY_STATS.totalMembers.toLocaleString()} change={8.4} />
       </div>
+
+      {/* AI Marketing Insights */}
+      {config.features.aiMarketingInsights && (
+        <div className="bg-gradient-to-r from-kuriftu-50 to-sand-50 border border-kuriftu-200 rounded-lg p-5 mb-4">
+          <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center gap-2">
+              <span className="text-kuriftu-500">{Icons.sparkle}</span>
+              <span className="text-sm font-semibold text-kuriftu-900">AI Campaign Insights</span>
+            </div>
+            <button
+              onClick={fetchMktInsight}
+              disabled={insightLoading}
+              className="px-3 py-1.5 rounded-lg bg-kuriftu-700 text-white text-xs font-semibold hover:bg-kuriftu-800 transition-colors disabled:opacity-50"
+            >
+              {insightLoading ? "Analyzing..." : "Generate Insights"}
+            </button>
+          </div>
+          {mktInsight ? (
+            <div className="text-[13px] text-kuriftu-900 leading-relaxed whitespace-pre-line bg-white/60 rounded-lg p-4 border border-kuriftu-100">{mktInsight}</div>
+          ) : (
+            <div className="text-[12px] text-sand-500 italic">Click to generate AI-powered campaign optimization recommendations.</div>
+          )}
+        </div>
+      )}
 
       <div className="grid grid-cols-1 lg:grid-cols-[2fr_1fr] gap-4">
         {/* Campaigns Table */}

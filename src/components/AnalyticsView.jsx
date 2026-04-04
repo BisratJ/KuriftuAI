@@ -1,11 +1,14 @@
 "use client";
 
+import { useState, useCallback } from "react";
 import { Icons } from "./Icons";
 import MetricCard from "./MetricCard";
 import {
   LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip,
   ResponsiveContainer, PieChart, Pie, Cell,
 } from "recharts";
+import { useConfig } from "@/lib/config";
+import { generateInsights } from "@/lib/aiClient";
 import { KPI_DATA, REVENUE_ATTRIBUTION, AI_DECISIONS_LOG } from "@/lib/data";
 
 const KPI_LABELS = {
@@ -21,6 +24,23 @@ const DAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 const PIE_COLORS = ["#92400e", "#B45309", "#D97706", "#F59E0B", "#FCD34D", "#e7e0d8"];
 
 export default function AnalyticsView() {
+  const { config } = useConfig();
+  const [analyticsInsight, setAnalyticsInsight] = useState(null);
+  const [insightLoading, setInsightLoading] = useState(false);
+
+  const fetchAnalyticsInsight = useCallback(async () => {
+    setInsightLoading(true);
+    try {
+      const result = await generateInsights({
+        prompt: config.ai.dashboardPrompt + "\nFocus on KPI trends, revenue attribution, and AI decision effectiveness.",
+        data: { kpis: KPI_DATA, revenueAttribution: REVENUE_ATTRIBUTION, recentDecisions: AI_DECISIONS_LOG.slice(0, 3) },
+        module: "analytics",
+      });
+      setAnalyticsInsight(result.reply);
+    } catch { setAnalyticsInsight(null); }
+    finally { setInsightLoading(false); }
+  }, [config]);
+
   const kpiCards = Object.entries(KPI_DATA).map(([key, data]) => {
     const meta = KPI_LABELS[key];
     const trendData = data.trend.map((v, i) => ({ day: DAYS[i], value: v }));
@@ -35,6 +55,28 @@ export default function AnalyticsView() {
       <div className="mb-7">
         <h1 className="text-[22px] font-semibold text-kuriftu-900 tracking-tight">Analytics Center</h1>
         <p className="text-sm text-sand-500 mt-1">Enterprise KPIs, AI explainability, and revenue attribution</p>
+      </div>
+
+      {/* AI Analytics Insight */}
+      <div className="bg-gradient-to-r from-kuriftu-50 to-sand-50 border border-kuriftu-200 rounded-lg p-5 mb-6">
+        <div className="flex items-center justify-between mb-3">
+          <div className="flex items-center gap-2">
+            <span className="text-kuriftu-500">{Icons.sparkle}</span>
+            <span className="text-sm font-semibold text-kuriftu-900">AI Analytics Summary</span>
+          </div>
+          <button
+            onClick={fetchAnalyticsInsight}
+            disabled={insightLoading}
+            className="px-3 py-1.5 rounded-lg bg-kuriftu-700 text-white text-xs font-semibold hover:bg-kuriftu-800 transition-colors disabled:opacity-50"
+          >
+            {insightLoading ? "Analyzing..." : "Generate Analysis"}
+          </button>
+        </div>
+        {analyticsInsight ? (
+          <div className="text-[13px] text-kuriftu-900 leading-relaxed whitespace-pre-line bg-white/60 rounded-lg p-4 border border-kuriftu-100">{analyticsInsight}</div>
+        ) : (
+          <div className="text-[12px] text-sand-500 italic">Click to generate AI-powered KPI and revenue attribution analysis.</div>
+        )}
       </div>
 
       {/* KPI Cards with sparklines */}
