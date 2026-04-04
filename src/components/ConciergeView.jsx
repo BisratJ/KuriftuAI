@@ -46,7 +46,7 @@ export default function ConciergeView() {
   };
 
   return (
-    <div className="flex h-full bg-sand-50">
+    <div className="flex h-full bg-sand-50 mx-auto max-w-[1400px]">
       {/* Chat panel */}
       <div className="flex-1 flex flex-col">
         <div className="px-8 py-5 border-b border-sand-200 bg-white">

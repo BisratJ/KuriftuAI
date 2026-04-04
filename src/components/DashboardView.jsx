@@ -12,7 +12,7 @@ import {
 
 export default function DashboardView() {
   return (
-    <div className="p-8 max-w-[1200px]">
+    <div className="p-8 max-w-[1200px] mx-auto">
       <div className="mb-7">
         <h1 className="text-[22px] font-semibold text-kuriftu-900 tracking-tight">
           Dashboard

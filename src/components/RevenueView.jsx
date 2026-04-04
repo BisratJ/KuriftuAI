@@ -5,7 +5,7 @@ import { DYNAMIC_PRICING, UPSELL_OPPORTUNITIES } from "@/lib/data";
 
 export default function RevenueView() {
   return (
-    <div className="p-8 max-w-[1200px]">
+    <div className="p-8 max-w-[1200px] mx-auto">
       <div className="mb-7">
         <h1 className="text-[22px] font-semibold text-kuriftu-900 tracking-tight">Revenue Intelligence</h1>
         <p className="text-sm text-sand-500 mt-1">AI-powered pricing and upsell optimization</p>

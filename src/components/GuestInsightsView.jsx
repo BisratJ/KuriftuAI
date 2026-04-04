@@ -13,7 +13,7 @@ const FLAGGED_FEEDBACK = [
 
 export default function GuestInsightsView() {
   return (
-    <div className="p-8 max-w-[1200px]">
+    <div className="p-8 max-w-[1200px] mx-auto">
       <div className="mb-7">
         <h1 className="text-[22px] font-semibold text-kuriftu-900 tracking-tight">Guest Insights</h1>
         <p className="text-sm text-sand-500 mt-1">AI-driven sentiment analysis and guest intelligence</p>
