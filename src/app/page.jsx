@@ -15,9 +15,10 @@ import AnalyticsView from "@/components/AnalyticsView";
 import MarketingView from "@/components/MarketingView";
 import SettingsView from "@/components/SettingsView";
 import AdminView from "@/components/AdminView";
+import UserExperienceView from "@/components/UserExperienceView";
 import LandingPage from "@/components/LandingPage";
 
-const NAV_SECTIONS = [
+const ADMIN_NAV_SECTIONS = [
   {
     label: "Core",
     items: [
@@ -53,14 +54,45 @@ const NAV_SECTIONS = [
   },
 ];
 
+const USER_NAV_SECTIONS = [
+  {
+    label: "My Stay",
+    items: [
+      { id: "user-home", label: "Overview", icon: Icons.dashboard },
+      { id: "user-bookings", label: "My Bookings", icon: Icons.bookings },
+      { id: "user-activities", label: "Activities", icon: Icons.sparkle },
+      { id: "user-profile", label: "Profile & Perks", icon: Icons.profiles },
+    ],
+  },
+  {
+    label: "Support",
+    items: [{ id: "concierge", label: "Concierge", icon: Icons.chat }],
+  },
+];
+
 export default function Home() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [userRole, setUserRole] = useState("admin");
   const [activeView, setActiveView] = useState("dashboard");
 
-  const handleLogin = (targetView = "dashboard") => {
+  const handleLogin = (loginConfig = {}) => {
+    if (typeof loginConfig === "string") {
+      setUserRole("admin");
+      setActiveView(loginConfig);
+      setIsLoggedIn(true);
+      return;
+    }
+
+    const role = loginConfig.role || "admin";
+    const targetView =
+      loginConfig.targetView || (role === "user" ? "user-home" : "dashboard");
+
+    setUserRole(role);
     setActiveView(targetView);
     setIsLoggedIn(true);
   };
+
+  const navSections = userRole === "user" ? USER_NAV_SECTIONS : ADMIN_NAV_SECTIONS;
 
   if (!isLoggedIn) {
     return <LandingPage onLogin={handleLogin} />;
@@ -81,7 +113,7 @@ export default function Home() {
         </div>
 
         <nav className="p-3 flex-1 overflow-y-auto">
-          {NAV_SECTIONS.map((section) => (
+          {navSections.map((section) => (
             <div key={section.label} className="mb-3">
               <div className="text-[10px] font-bold text-sand-400 uppercase tracking-widest mb-2 px-3">
                 {section.label}
@@ -114,11 +146,17 @@ export default function Home() {
               <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
               <span className="text-[11px] font-medium text-sand-600">All systems online</span>
             </div>
-            <div className="text-[10px] text-sand-400 font-medium">6 Properties &middot; 158 Staff</div>
+            <div className="text-[10px] text-sand-400 font-medium">
+              {userRole === "user" ? "Guest Experience Mode" : "6 Properties · 158 Staff"}
+            </div>
           </div>
           
           <button 
-            onClick={() => setIsLoggedIn(false)}
+            onClick={() => {
+              setIsLoggedIn(false);
+              setUserRole("admin");
+              setActiveView("dashboard");
+            }}
             className="flex items-center gap-3 w-full px-3 py-2 rounded-lg border-none text-[13px] cursor-pointer text-left text-red-500 font-medium hover:bg-red-50 transition-all duration-200"
           >
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -133,19 +171,25 @@ export default function Home() {
       <div className="flex-1 overflow-y-auto bg-sand-50 scroll-smooth">
         <main className="max-w-[1400px] mx-auto h-full min-h-screen" key={activeView}>
           <div className="view-transition">
-            {activeView === "dashboard" && <DashboardView />}
-            {activeView === "concierge" && <ConciergeView />}
-            {activeView === "bookings" && <BookingsView />}
-            {activeView === "revenue" && <RevenueView />}
-            {activeView === "guests" && <GuestInsightsView />}
-            {activeView === "profiles" && <GuestProfilesView />}
-            {activeView === "analytics" && <AnalyticsView />}
-            {activeView === "operations" && <OperationsView />}
-            {activeView === "staff" && <StaffView />}
-            {activeView === "smartrooms" && <SmartRoomsView />}
-            {activeView === "marketing" && <MarketingView />}
-            {activeView === "settings" && <SettingsView />}
-            {activeView === "admin" && <AdminView />}
+            {userRole === "user" && activeView === "user-home" && <UserExperienceView section="user-home" />}
+            {userRole === "user" && activeView === "user-bookings" && <UserExperienceView section="user-bookings" />}
+            {userRole === "user" && activeView === "user-activities" && <UserExperienceView section="user-activities" />}
+            {userRole === "user" && activeView === "user-profile" && <UserExperienceView section="user-profile" />}
+            {userRole === "user" && activeView === "concierge" && <ConciergeView />}
+
+            {userRole !== "user" && activeView === "dashboard" && <DashboardView />}
+            {userRole !== "user" && activeView === "concierge" && <ConciergeView />}
+            {userRole !== "user" && activeView === "bookings" && <BookingsView />}
+            {userRole !== "user" && activeView === "revenue" && <RevenueView />}
+            {userRole !== "user" && activeView === "guests" && <GuestInsightsView />}
+            {userRole !== "user" && activeView === "profiles" && <GuestProfilesView />}
+            {userRole !== "user" && activeView === "analytics" && <AnalyticsView />}
+            {userRole !== "user" && activeView === "operations" && <OperationsView />}
+            {userRole !== "user" && activeView === "staff" && <StaffView />}
+            {userRole !== "user" && activeView === "smartrooms" && <SmartRoomsView />}
+            {userRole !== "user" && activeView === "marketing" && <MarketingView />}
+            {userRole !== "user" && activeView === "settings" && <SettingsView />}
+            {userRole !== "user" && activeView === "admin" && <AdminView />}
           </div>
         </main>
       </div>

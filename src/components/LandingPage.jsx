@@ -139,7 +139,18 @@ export default function LandingPage({ onLogin }) {
     setError("");
     setLoading(true);
     setTimeout(() => {
-      onLogin(pendingRedirect);
+      const isAdminEmail = email.trim().toLowerCase().includes("admin");
+      const role = isAdminEmail ? "admin" : "user";
+      const targetView =
+        role === "user"
+          ? pendingRedirect === "bookings"
+            ? "user-bookings"
+            : pendingRedirect.startsWith("user-")
+              ? pendingRedirect
+              : "user-home"
+          : pendingRedirect;
+
+      onLogin({ targetView, role });
       setLoading(false);
     }, 1000);
   };
@@ -153,15 +164,23 @@ export default function LandingPage({ onLogin }) {
     }
     setLoading(true);
     setTimeout(() => {
-      onLogin(pendingRedirect);
+      const targetView =
+        pendingRedirect === "bookings"
+          ? "user-bookings"
+          : pendingRedirect.startsWith("user-")
+            ? pendingRedirect
+            : "user-home";
+
+      onLogin({ targetView, role: "user" });
       setLoading(false);
     }, 1200);
   };
 
-  const handleDemoLogin = (redirectTo) => {
+  const handleDemoLogin = (role = "user") => {
     setLoading(true);
     setTimeout(() => {
-      onLogin(redirectTo);
+      const targetView = role === "admin" ? "dashboard" : "user-home";
+      onLogin({ targetView, role });
       setLoading(false);
     }, 800);
   };
@@ -670,7 +689,7 @@ export default function LandingPage({ onLogin }) {
               <div className="grid grid-cols-2 gap-3">
                 <button
                   type="button"
-                  onClick={() => handleDemoLogin("bookings")}
+                  onClick={() => handleDemoLogin("user")}
                   disabled={loading}
                   className="py-3 border border-sand-200 bg-sand-50 hover:bg-sand-100 text-kuriftu-800 rounded-xl font-semibold text-sm transition-all flex items-center justify-center gap-2 disabled:opacity-70"
                 >
@@ -678,7 +697,7 @@ export default function LandingPage({ onLogin }) {
                 </button>
                 <button
                   type="button"
-                  onClick={() => handleDemoLogin("dashboard")}
+                  onClick={() => handleDemoLogin("admin")}
                   disabled={loading}
                   className="py-3 border border-kuriftu-200 bg-kuriftu-50 hover:bg-kuriftu-100 text-kuriftu-800 rounded-xl font-semibold text-sm transition-all flex items-center justify-center gap-2 disabled:opacity-70"
                 >
