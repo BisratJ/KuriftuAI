@@ -7,25 +7,25 @@ const LOCATION_DETAILS = {
   bishoftu: {
     city: "Bishoftu",
     description:
-      "A lakeside paradise on the shores of volcanic crater lakes, known for luxury escapes and serene wellness retreats.",
-    tag: "Most Popular",
+      "A flagship lakeside paradise adjacent to East Africa's largest water park, offering ultimate family fun and forest spa retreats.",
+    tag: "Flagship & Waterpark",
     emoji: "🌊",
     gradient: "from-[#0d3b2e] to-[#1a6b50]",
   },
   bahirdar: {
     city: "Bahir Dar",
     description:
-      "Set near Lake Tana and the source of the Blue Nile, blending heritage, nature, and waterfront relaxation.",
-    tag: "Heritage",
+      "Set directly on the shores of Lake Tana, your gateway to historic island monasteries and Blue Nile boat tours.",
+    tag: "Lake Tana",
     emoji: "⛵",
     gradient: "from-[#0a2d3a] to-[#1a5a6e]",
   },
   adama: {
     city: "Adama",
     description:
-      "A vibrant gateway destination with modern comfort, warm hospitality, and easy access to central Ethiopia.",
+      "A vibrant and relaxed getaway destination with modern resort comforts, swimming pools, and excellent dining.",
     tag: "City Escape",
-    emoji: "�️",
+    emoji: "⛱️",
     gradient: "from-[#1a2a4a] to-[#2d4a7a]",
   },
   langano: {
@@ -33,40 +33,36 @@ const LOCATION_DETAILS = {
     description:
       "A tranquil lakeside environment ideal for family retreats, outdoor recreation, and nature-based experiences.",
     tag: "Nature",
-    emoji: "�",
+    emoji: "🌿",
     gradient: "from-[#2d1a0a] to-[#6e3a1a]",
   },
   "african-village": {
     city: "African Village",
     description:
-      "A distinctive cultural and luxury concept where design, storytelling, and hospitality meet in one destination.",
-    tag: "Signature",
+      "A luxury pan-African cultural hub in Shaggar City, featuring 54 uniquely themed villas and continental cuisine.",
+    tag: "Cultural Hub",
     emoji: "🛖",
     gradient: "from-[#3a1a2d] to-[#6e2d5a]",
   },
   entoto: {
     city: "Entoto",
     description:
-      "A highland forest retreat above Addis Ababa with panoramic city views, cool climate, and eucalyptus trails.",
-    tag: "Mountain View",
+      "An adventure park and retreat in the highland eucalyptus forest above Addis Ababa, featuring ziplines and rope courses.",
+    tag: "Adventure Park",
     emoji: "🏔️",
     gradient: "from-[#2d2a0a] to-[#5a4d1a]",
   },
 };
 
 const LOCATION_IMAGES = {
-  bishoftu:
-    "https://images.unsplash.com/photo-1489493887464-892be6d1daae?auto=format&fit=crop&w=1200&q=80",
-  bahirdar:
-    "https://images.unsplash.com/photo-1516026672322-bc52d61a55d5?auto=format&fit=crop&w=1200&q=80",
+  bishoftu: "/bishoftu.png",
+  bahirdar: "/bahirdar.png",
   adama:
     "https://images.unsplash.com/photo-1467269204594-9661b134dd2b?auto=format&fit=crop&w=1200&q=80",
   langano:
     "https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&w=1200&q=80",
-  "african-village":
-    "https://images.unsplash.com/photo-1542042161-d5fe4b34c6ff?auto=format&fit=crop&w=1200&q=80",
-  entoto:
-    "https://images.unsplash.com/photo-1448375240586-882707db888b?auto=format&fit=crop&w=1200&q=80",
+  "african-village": "/african-village.png",
+  entoto: "/entoto.png",
 };
 
 export default function LandingPage({ onLogin }) {
@@ -81,6 +77,7 @@ export default function LandingPage({ onLogin }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [phone, setPhone] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -118,6 +115,7 @@ export default function LandingPage({ onLogin }) {
     setEmail("");
     setPassword("");
     setConfirmPassword("");
+    setPhone("");
     setError("");
     setLoading(false);
   };
@@ -133,6 +131,9 @@ export default function LandingPage({ onLogin }) {
     setAuthMode(null);
     resetForm();
   };
+
+  // Focus state for form blurring
+  const [focusedInput, setFocusedInput] = useState(null);
 
   const handleSignIn = (e) => {
     e.preventDefault();
@@ -185,34 +186,160 @@ export default function LandingPage({ onLogin }) {
     }, 800);
   };
 
+  // ─── ACTIVITY & DINING DATA ───
+  const ACTIVITIES = [
+    { 
+      id: "waterpark",
+      name: "Kuriftu Water Park", 
+      loc: "Bishoftu", 
+      icon: "🎢", 
+      short: "East Africa's largest and most exciting water park.",
+      detail: "Located adjacent to our Bishoftu resort, this massive 30,000 sqm water park features thrilling boomerang and spiral slides, a wave pool, a relaxing lazy river, and dedicated children's water houses. Fun for the whole family.",
+      img: "https://images.unsplash.com/photo-1519046904884-53103b34b206?auto=format&fit=crop&w=800&q=80",
+      features: ["Boomerang Slides", "Massive Wave Pool", "Lazy River", "Performance Center"]
+    },
+    { 
+      id: "zipline",
+      name: "Entoto Adventure Ziplining", 
+      loc: "Entoto", 
+      icon: "🧗", 
+      short: "Soar above the eucalyptus canopy in Addis Ababa.",
+      detail: "Experience the thrill of our professional-grade zipline and aerial rope courses suspended high in the lush eucalyptus forests of Entoto Mountain. A safe, exhilarating adventure with panoramic views.",
+      img: "https://images.unsplash.com/photo-1521401830884-6c03c1c87ebb?auto=format&fit=crop&w=800&q=80",
+      features: ["Forest Zipline", "Rope Courses", "Wall Climbing", "Safe & Certified"]
+    },
+    { 
+      id: "boattour",
+      name: "Lake Tana Boat Tours", 
+      loc: "Bahir Dar", 
+      icon: "⛴️", 
+      short: "Cruise to historic island monasteries and the Blue Nile.",
+      detail: "Depart directly from the resort shores for a scenic boat ride across Lake Tana. Visit ancient, forest-veiled monasteries like Ura Kidane Mehret on the Zege Peninsula and spot hippos near the Blue Nile source.",
+      img: "https://images.unsplash.com/photo-1540553016722-983e48a2cd10?auto=format&fit=crop&w=800&q=80",
+      features: ["Monastery Visits", "Blue Nile Source", "Bird Watching", "Hippo Spotting"]
+    },
+    { 
+      id: "spa",
+      name: "Kuriftu Forest Spa", 
+      loc: "All Resorts", 
+      icon: "🧘", 
+      short: "Award-winning sanctuaries for Ethiopian coffee-based rituals.",
+      detail: "Our world-class spa facilities blend ancient wellness traditions with modern luxury. Relax in the sauna and steam room, then experience a signature deep-tissue massage or rejuvenating coffee scrub.",
+      img: "https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=800&q=80",
+      features: ["Coffee Scrubs", "Deep Tissue Massage", "Sauna & Steam", "Forest Atmosphere"]
+    },
+    { 
+      id: "kayaking",
+      name: "Lake Kuriftu Kayaking", 
+      loc: "Bishoftu", 
+      icon: "🛶", 
+      short: "Serene paddling on the calm waters of the volcanic crater lake.",
+      detail: "Grab a kayak and glide across the tranquil, dark blue waters of Lake Kuriftu. Enjoy a unique perspective of the lush resort gardens and abundant birdlife from the center of the crater lake.",
+      img: "https://images.unsplash.com/photo-1518467166778-b88f373ffec7?auto=format&fit=crop&w=800&q=80",
+      features: ["Complimentary Craft", "Peaceful Waters", "Bird Watching", "Sunset Paddles"]
+    },
+    { 
+      id: "cinema",
+      name: "Private Resort Cinema", 
+      loc: "Bishoftu", 
+      icon: "🎬", 
+      short: "Relaxing cinematic experience with plush lounging.",
+      detail: "Unwind after a day of activities in our private screening room. Sink into cozy cushions and enjoy movies in a comfortable, intimate setting perfect for couples and families alike.",
+      img: "https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?auto=format&fit=crop&w=800&q=80",
+      features: ["HD Projection", "Plush Cushions", "Intimate Setting", "Evening Entertainment"]
+    }
+  ];
+
+  const RESTAURANTS = [
+    { 
+      id: "1963restaurant",
+      name: "1963 Restaurant", 
+      loc: "African Village", 
+      special: "Continental African Cuisine", 
+      detail: "Named after the founding year of the African Union, this signature restaurant offers a culinary journey across the African continent, featuring diverse, masterfully prepared dishes celebrating pan-African flavors.",
+      img: "https://images.unsplash.com/photo-1514361892635-6b07e31e75f9?auto=format&fit=crop&w=800&q=80",
+      features: ["Pan-African Menu", "Thematic Decor", "Cultural Ambiance", "Signature Dining"]
+    },
+    { 
+      id: "lakefront",
+      name: "Lakefront Restaurant", 
+      loc: "Bishoftu", 
+      special: "Lake View Dining & Coffee", 
+      detail: "Enjoy uninterrupted views of Lake Kuriftu from our outdoor seating deck. Our culinary approach weaves traditional Ethiopian specialties with international fare, complemented by the famous Ethiopian coffee ceremony.",
+      img: "https://images.unsplash.com/photo-1493770348161-369560ae357d?auto=format&fit=crop&w=800&q=80",
+      features: ["Outdoor Deck", "Lake Views", "Ethiopian Specialties", "International Fare"]
+    },
+    { 
+      id: "summitgrill",
+      name: "Summit Grill Restaurant", 
+      loc: "African Village", 
+      special: "Panoramic Dining heights", 
+      detail: "Perched at the highest point of the African Village in Shaggar City, the Summit Grill provides breathtaking panoramic skyline views accompanied by a sophisticated menu of grilled international favorites.",
+      img: "https://images.unsplash.com/photo-1541512416146-3cf58d6b27cc?auto=format&fit=crop&w=800&q=80",
+      features: ["Skyline Views", "Premium Grill", "Signature Cocktails", "Sophisticated Atmosphere"]
+    },
+    { 
+      id: "kuriftulaketana",
+      name: "Kuriftu Lake Tana Restaurant", 
+      loc: "Bahir Dar", 
+      special: "Fresh Catch & Traditional Fare", 
+      detail: "Situated right on the shores of Lake Tana, this scenic dining spot specializes in fresh fish sourced from the lake, alongside traditional Ethiopian meat dishes, providing a tranquil waterfront culinary experience.",
+      img: "https://images.unsplash.com/photo-1414450397866-85f90db48714?auto=format&fit=crop&w=800&q=80",
+      features: ["Waterfront Terrace", "Fresh Local Catch", "Traditional Meats", "Lake Breezes"]
+    },
+    { 
+      id: "entotodining",
+      name: "Kuriftu Entoto Restaurant", 
+      loc: "Entoto", 
+      special: "Highland Forest Cuisine", 
+      detail: "Nestled in the cool highlands of Entoto Park, relax at modern cafes and dining spots serving organic coffee, local cuisine, and light gourmet fare—the perfect way to recharge after forest adventures.",
+      img: "https://images.unsplash.com/photo-1541173103185-1fe29fd21d7b?auto=format&fit=crop&w=800&q=80",
+      features: ["Highland Atmosphere", "Organic Coffee", "Modern Cafes", "Scenic Forest Setting"]
+    },
+    { 
+      id: "articoffee",
+      name: "Artisan Coffee Kuriftu", 
+      loc: "All Locations", 
+      special: "Micro-lot Specialty Brews", 
+      detail: "A celebration of Ethiopia's gift to the world. Our baristas serve expertly roasted micro-lot coffees from regional origins like Sidamo, holding true to the renowned Ethiopian coffee ceremony and exceptional daily brews.",
+      img: "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&w=800&q=80",
+      features: ["Coffee Ceremony", "Specialty Roasts", "Artisan Baristas", "Ethiopian Heritage"]
+    }
+  ];
+
+  const [selectedItem, setSelectedItem] = useState(null);
+
   return (
     <div className="min-h-screen bg-white font-sans overflow-x-hidden">
       {/* ──────────────── NAVIGATION ──────────────── */}
       <nav
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-          scrolled
-            ? "bg-white/95 backdrop-blur-md shadow-md"
-            : "bg-transparent"
-        }`}
+        className={`fixed z-50 transition-all duration-500 flex justify-center w-full px-6 pt-4 pointer-events-none`}
       >
-        <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+        <div
+          className={`w-full max-w-6xl mx-auto rounded-full transition-all duration-500 pointer-events-auto border overflow-hidden ${
+            scrolled
+              ? "bg-white/75 backdrop-blur-xl shadow-lg border-sand-100 py-1"
+              : "bg-white/10 backdrop-blur-md border-white/20 py-2"
+          }`}
+        >
+          <div className="px-8 flex items-center justify-between">
           {/* Logo */}
           <div className="flex items-center gap-3 flex-shrink-0">
             <img
               src="/kuriftu-logo.png"
               alt="KuriftuAI logo"
-              className="w-10 h-10 object-contain mix-blend-screen"
+              className="w-16 h-16 object-contain transition-all duration-300 drop-shadow-md"
             />
             <div>
               <div
-                className={`font-bold text-base tracking-tight transition-colors duration-300 ${
+                className={`font-bold text-lg tracking-tight transition-colors duration-300 ${
                   scrolled ? "text-kuriftu-900" : "text-white"
                 }`}
               >
                 Kuriftu Resort
               </div>
               <div
-                className={`text-[10px] tracking-widest uppercase transition-colors duration-300 ${
+                className={`text-[10px] tracking-[0.2em] uppercase transition-colors duration-300 ${
                   scrolled ? "text-sand-400" : "text-white/60"
                 }`}
               >
@@ -223,7 +350,7 @@ export default function LandingPage({ onLogin }) {
 
           {/* Desktop links */}
           <div className="hidden lg:flex items-center gap-7">
-            {["Resorts", "Booking"].map(
+            {["Resorts", "Activities", "Booking"].map(
               (link) => (
                 <a
                   key={link}
@@ -280,15 +407,16 @@ export default function LandingPage({ onLogin }) {
             </button>
           </div>
         </div>
+      </div>
 
-        {/* Mobile menu */}
+      {/* Mobile menu - Floating dropdown */}
         {mobileMenuOpen && (
-          <div className="lg:hidden bg-white border-t border-sand-100 px-6 py-4 space-y-3 shadow-lg">
-            {["Resorts", "Booking"].map((link) => (
+          <div className="absolute top-20 left-6 right-6 lg:hidden bg-white/95 backdrop-blur-xl border border-sand-100 px-6 py-5 space-y-4 shadow-2xl rounded-[2.5rem] pointer-events-auto animate-fade-in-down">
+            {["Resorts", "Activities", "Booking"].map((link) => (
               <a
                 key={link}
                 href={`#${link.toLowerCase()}`}
-                className="block text-sm font-medium text-kuriftu-800 hover:text-kuriftu-600 py-1"
+                className="block text-base font-semibold text-kuriftu-800 hover:text-kuriftu-600 border-b border-sand-50 pb-2"
                 onClick={() => setMobileMenuOpen(false)}
               >
                 {link}
@@ -296,7 +424,7 @@ export default function LandingPage({ onLogin }) {
             ))}
             <button
               onClick={() => openAuth("signin")}
-              className="block w-full text-left text-sm font-semibold text-kuriftu-700 py-1"
+              className="block w-full text-center py-3 rounded-2xl bg-kuriftu-700 text-white text-sm font-bold shadow-lg"
             >
               Sign In
             </button>
@@ -413,21 +541,7 @@ export default function LandingPage({ onLogin }) {
         </div>
       </section>
 
-      {/* ──────────────── AWARD STRIP ──────────────── */}
-      <div className="bg-kuriftu-900 py-4">
-        <div className="max-w-7xl mx-auto px-6 flex flex-wrap items-center justify-center gap-8 text-white/50 text-xs font-medium uppercase tracking-widest">
-          {[
-            "🏆 Africa Travel Awards — Best Resort Chain 2024",
-            "⭐ Condé Nast Traveller — Top 10 African Resorts",
-            "🌿 Eco-Certified Luxury — Green Globe",
-            "💎 Forbes Travel Guide — Recommended",
-          ].map((a) => (
-            <span key={a} className="text-white/40 hover:text-white/70 transition-colors cursor-default">
-              {a}
-            </span>
-          ))}
-        </div>
-      </div>
+      {/* Awards section removed per request */}
 
       {/* ──────────────── RESORTS ──────────────── */}
       <section id="resorts" className="py-24 bg-sand-50">
@@ -504,6 +618,204 @@ export default function LandingPage({ onLogin }) {
         </div>
       </section>
 
+      {/* ──────────────── ACTIVITIES & DINING (RESTRUCTURED) ──────────────── */}
+      <section id="activities" className="py-32 bg-white relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-kuriftu-50/40 rounded-full blur-[120px] -translate-y-1/2 translate-x-1/2 opacity-60" />
+        
+        <div className="max-w-7xl mx-auto px-6 relative z-10">
+          <div className="text-center mb-20">
+            <div className="inline-block px-4 py-1.5 bg-kuriftu-50 text-kuriftu-700 text-[10px] font-bold uppercase tracking-[0.2em] rounded-full mb-4 border border-kuriftu-100">
+              Lifestyle & Leisure
+            </div>
+            <h2 className="text-4xl md:text-5xl font-bold text-kuriftu-950 mb-6" style={{ fontFamily: "Georgia, serif" }}>
+              Experience the Kuriftu Lifestyle
+            </h2>
+            <div className="w-24 h-1 bg-kuriftu-600 mx-auto rounded-full mb-8" />
+          </div>
+
+          {/* 🚣 ACTIVITIES SECTION (TOP) */}
+          <div className="mb-24">
+            <div className="flex items-center gap-4 mb-10 pb-4 border-b border-sand-100">
+               <span className="w-10 h-10 rounded-full bg-kuriftu-100 flex items-center justify-center text-xl">🚣</span>
+               <h3 className="text-2xl font-bold text-kuriftu-900 tracking-tight">Signature Resort Activities</h3>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {ACTIVITIES.map((activity) => (
+                <div 
+                  key={activity.id} 
+                  onClick={() => setSelectedItem({ ...activity, type: 'activity' })}
+                  className="group relative h-72 rounded-3xl overflow-hidden bg-sand-100 shadow-sm cursor-pointer hover:shadow-2xl transition-all duration-500"
+                >
+                  <img src={activity.img} alt={activity.name} className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent transition-all duration-300 pointer-events-none" />
+                  
+                  <div className="absolute inset-x-6 bottom-6 transition-all duration-500 group-hover:bottom-8">
+                     <div className="flex items-center gap-2 mb-2">
+                        <span className="text-xl bg-white/20 backdrop-blur-md w-8 h-8 rounded-full flex items-center justify-center">{activity.icon}</span>
+                        <span className="text-[10px] font-bold text-kuriftu-300 uppercase tracking-widest">{activity.loc}</span>
+                     </div>
+                     <h4 className="text-xl font-bold text-white mb-2">{activity.name}</h4>
+                     
+                     <p className="text-white/70 text-xs leading-relaxed line-clamp-2 max-h-0 group-hover:max-h-20 opacity-0 group-hover:opacity-100 transition-all duration-500">
+                        {activity.short}
+                     </p>
+                  </div>
+                  
+                  <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-all duration-300 scale-90 group-hover:scale-100">
+                    <div className="bg-white/20 backdrop-blur-md px-3 py-1.5 rounded-full text-[10px] font-bold text-white uppercase tracking-wider border border-white/20">
+                      View Details
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* 🍽️ RESTAURANTS SECTION (BOTTOM) */}
+          <div>
+            <div className="flex items-center gap-4 mb-10 pb-4 border-b border-sand-100">
+               <span className="w-10 h-10 rounded-full bg-kuriftu-100 flex items-center justify-center text-xl">🍽️</span>
+               <h3 className="text-2xl font-bold text-kuriftu-900 tracking-tight">Exceptional Dining & Coffee</h3>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {RESTAURANTS.map((dining) => (
+                <div 
+                  key={dining.id} 
+                  onClick={() => setSelectedItem({ ...dining, type: 'dining' })}
+                  className="group cursor-pointer"
+                >
+                  <div className="relative h-64 rounded-2xl overflow-hidden mb-5 shadow-sm transform transition-all duration-300 group-hover:-translate-y-2 group-hover:shadow-2xl">
+                    <img src={dining.img} alt={dining.name} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                    <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-md px-3 py-1 rounded-full text-[10px] font-bold text-kuriftu-800 uppercase tracking-widest border border-white">
+                      {dining.loc}
+                    </div>
+                    <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                      <div className="bg-white/90 text-kuriftu-900 px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-widest shadow-xl">
+                        View Menu & Details
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-start justify-between">
+                     <div>
+                        <h4 className="text-lg font-bold text-kuriftu-900 group-hover:text-kuriftu-600 transition-colors mb-1">{dining.name}</h4>
+                        <div className="text-xs text-kuriftu-500 font-medium mb-3">{dining.special}</div>
+                     </div>
+                     <div className="w-8 h-8 rounded-full border border-sand-200 flex items-center justify-center group-hover:bg-kuriftu-700 group-hover:border-kuriftu-700 transition-all">
+                        <span className="text-kuriftu-400 group-hover:text-white transition-colors">→</span>
+                     </div>
+                  </div>
+                  
+                  <p className="text-sand-500 text-sm leading-relaxed line-clamp-2">
+                    {dining.detail.substring(0, 90)}...
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* ──────────────── DETAIL MODAL ──────────────── */}
+        {selectedItem && (
+          <div className="fixed inset-0 z-[110] flex items-center justify-center p-4">
+            <div 
+              className="absolute inset-0 bg-black/80 backdrop-blur-lg animate-fade-in" 
+              onClick={() => setSelectedItem(null)}
+            />
+            <div className="relative w-full max-w-4xl bg-white rounded-[2.5rem] shadow-2xl overflow-hidden flex flex-col md:flex-row animate-scale-in max-h-[90vh]">
+              {/* Left Side: Image */}
+              <div className="md:w-1/2 h-64 md:h-auto relative">
+                <img 
+                  src={selectedItem.img} 
+                  alt={selectedItem.name} 
+                  className="absolute inset-0 w-full h-full object-cover" 
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent md:bg-gradient-to-r" />
+                <div className="absolute bottom-6 left-6 md:bottom-auto md:top-8 md:left-8">
+                  <div className="flex items-center gap-3 bg-white/20 backdrop-blur-xl px-4 py-2 rounded-2xl border border-white/30 text-white">
+                    <span className="text-2xl">{selectedItem.icon || "🍽️"}</span>
+                    <div>
+                      <div className="text-[10px] font-bold uppercase tracking-[0.2em] opacity-80">{selectedItem.type}</div>
+                      <div className="text-sm font-bold">{selectedItem.loc}</div>
+                    </div>
+                  </div>
+                </div>
+                <button 
+                  onClick={() => setSelectedItem(null)}
+                  className="absolute top-4 right-4 md:hidden bg-white/20 backdrop-blur-md p-2 rounded-full text-white"
+                >
+                   <svg width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                    <line x1="18" y1="6" x2="6" y2="18" />
+                    <line x1="6" y1="6" x2="18" y2="18" />
+                  </svg>
+                </button>
+              </div>
+
+              {/* Right Side: Content */}
+              <div className="md:w-1/2 p-8 md:p-12 overflow-y-auto">
+                <button 
+                  onClick={() => setSelectedItem(null)}
+                  className="hidden md:flex absolute top-6 right-6 text-sand-400 hover:text-kuriftu-600 transition-colors p-2"
+                >
+                  <svg width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+                    <line x1="18" y1="6" x2="6" y2="18" />
+                    <line x1="6" y1="6" x2="18" y2="18" />
+                  </svg>
+                </button>
+
+                <div className="mb-8">
+                  <div className="text-kuriftu-600 text-xs font-bold uppercase tracking-[0.25em] mb-3">
+                    {selectedItem.type === 'activity' ? 'Signature Activity' : 'Featured Dining'}
+                  </div>
+                  <h2 className="text-3xl md:text-4xl font-bold text-kuriftu-900 leading-tight mb-4" style={{ fontFamily: "Georgia, serif" }}>
+                    {selectedItem.name}
+                  </h2>
+                  <div className="w-16 h-1 bg-kuriftu-600 rounded-full" />
+                </div>
+
+                <p className="text-sand-600 text-base md:text-lg leading-relaxed mb-8">
+                  {selectedItem.detail}
+                </p>
+
+                {selectedItem.features && (
+                  <div className="grid grid-cols-2 gap-4 mb-10">
+                    {selectedItem.features.map(f => (
+                      <div key={f} className="flex items-center gap-3">
+                        <div className="w-5 h-5 rounded-full bg-kuriftu-50 flex items-center justify-center">
+                          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#065f46" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                            <polyline points="20 6 9 17 4 12"></polyline>
+                          </svg>
+                        </div>
+                        <span className="text-sm font-semibold text-kuriftu-800">{f}</span>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                <div className="flex items-center gap-4">
+                   <button 
+                    onClick={() => {
+                      setSelectedItem(null);
+                      openAuth("signup", "bookings");
+                    }}
+                    className="flex-1 py-4 bg-kuriftu-700 hover:bg-kuriftu-800 text-white rounded-2xl font-bold transition-all shadow-lg shadow-kuriftu-900/20"
+                   >
+                     Book Now
+                   </button>
+                   {selectedItem.type === 'dining' && (
+                     <button className="flex-1 py-4 border border-sand-200 hover:bg-sand-50 text-kuriftu-900 rounded-2xl font-bold transition-all">
+                       View Menu
+                     </button>
+                   )}
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+      </section>
+
       <section id="booking" className="py-20 bg-sand-50">
         <div className="max-w-5xl mx-auto px-6 text-center">
           <h2 className="text-3xl sm:text-4xl font-bold text-kuriftu-900 mb-4" style={{ fontFamily: "Georgia, serif" }}>
@@ -529,13 +841,13 @@ export default function LandingPage({ onLogin }) {
         </div>
       </section>
 
-      <footer className="bg-kuriftu-900 text-white py-10">
-        <div className="max-w-7xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <footer className="bg-kuriftu-900/90 backdrop-blur-md text-white py-8 border-t border-white/5">
+        <div className="max-w-7xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-6">
           <div className="flex items-center gap-3">
-            <img src="/kuriftu-logo.png" alt="KuriftuAI" className="w-9 h-9 object-contain mix-blend-screen" />
+            <img src="/kuriftu-logo.png" alt="KuriftuAI" className="w-16 h-16 object-contain" />
             <div>
-              <div className="font-semibold">KuriftuAI</div>
-              <div className="text-xs text-white/50">Hospitality Intelligence</div>
+              <div className="font-bold text-xl">KuriftuAI</div>
+              <div className="text-xs text-white/40 tracking-widest uppercase">Hospitality Intelligence</div>
             </div>
           </div>
           <div className="text-white/40 text-sm text-center sm:text-right">
@@ -548,7 +860,7 @@ export default function LandingPage({ onLogin }) {
       {authMode && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
           <div
-            className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+            className="absolute inset-0 bg-black/70 backdrop-blur-md"
             onClick={closeAuth}
           />
           <div className="relative w-full max-w-[440px] bg-white rounded-2xl shadow-2xl overflow-hidden animate-scale-in">
@@ -558,54 +870,74 @@ export default function LandingPage({ onLogin }) {
               style={{ background: "linear-gradient(90deg, #92400e, #D97706, #fcd38d)" }}
             />
 
-            {/* Header */}
-            <div className="p-6 pb-4 flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <img src="/kuriftu-logo.png" alt="KuriftuAI" className="w-10 h-10 object-contain mix-blend-screen" />
-                <div>
-                  <div className="font-bold text-kuriftu-900">
-                    {authMode === "signin" ? "Welcome Back" : "Join Kuriftu"}
-                  </div>
-                  <div className="text-sand-400 text-xs">
-                    {authMode === "signin"
-                      ? "Sign in to your account"
-                      : "Create your account"}
-                  </div>
-                </div>
-              </div>
+            {/* Header - Centered */}
+            <div className="p-8 pb-4 flex flex-col items-center text-center relative">
               <button
                 onClick={closeAuth}
-                className="text-sand-400 hover:text-sand-600 transition-colors p-1"
+                className="absolute top-4 right-4 text-sand-400 hover:text-sand-600 transition-colors p-1"
               >
                 <svg width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
                   <line x1="18" y1="6" x2="6" y2="18" />
                   <line x1="6" y1="6" x2="18" y2="18" />
                 </svg>
               </button>
+              
+              <div className="flex flex-col items-center gap-3">
+                <img src="/kuriftu-logo.png" alt="KuriftuAI" className="w-32 h-32 object-contain mb-4" />
+                <div>
+                  <h2 className="text-3xl font-bold text-kuriftu-900 mb-1">
+                    {authMode === "signin" ? "Welcome Back" : "Joining Kuriftu"}
+                  </h2>
+                  <p className="text-sand-500 text-base max-w-[320px]">
+                    {authMode === "signin"
+                      ? "Sign in to access your luxury dashboard"
+                      : "Start your extraordinary journey with us"}
+                  </p>
+                </div>
+              </div>
             </div>
 
             {/* Form */}
             <form
               onSubmit={authMode === "signin" ? handleSignIn : handleSignUp}
-              className="px-6 pb-6 space-y-4"
+              className={`px-6 pb-6 space-y-4 transition-all duration-500 ${focusedInput ? "blur-[0.5px]" : ""}`}
             >
               {authMode === "signup" && (
-                <div>
-                  <label className="block text-xs font-bold text-sand-600 uppercase tracking-wider mb-1.5">
-                    Full Name
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    placeholder="Your full name"
-                    className="w-full px-4 py-3 rounded-xl border border-sand-200 bg-sand-50 text-kuriftu-900 text-sm focus:border-kuriftu-500 focus:ring-2 focus:ring-kuriftu-200 transition-all placeholder:text-sand-300"
-                  />
+                <div className="space-y-4">
+                  <div className={`transition-all duration-300 ${focusedInput && focusedInput !== 'name' ? 'opacity-40 blur-[1px]' : ''}`}>
+                    <label className="block text-xs font-bold text-sand-600 uppercase tracking-wider mb-1.5">
+                      Full Name
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      value={name}
+                      onFocus={() => setFocusedInput('name')}
+                      onBlur={() => setFocusedInput(null)}
+                      onChange={(e) => setName(e.target.value)}
+                      placeholder="Your name"
+                      className="w-full px-4 py-3 rounded-xl border border-sand-200 bg-sand-50 text-kuriftu-900 text-sm focus:border-kuriftu-500 focus:ring-2 focus:ring-kuriftu-200 transition-all placeholder:text-sand-300"
+                    />
+                  </div>
+                  <div className={`transition-all duration-300 ${focusedInput && focusedInput !== 'phone' ? 'opacity-40 blur-[1px]' : ''}`}>
+                    <label className="block text-xs font-bold text-sand-600 uppercase tracking-wider mb-1.5">
+                      Phone Number
+                    </label>
+                    <input
+                      type="tel"
+                      required
+                      value={phone}
+                      onFocus={() => setFocusedInput('phone')}
+                      onBlur={() => setFocusedInput(null)}
+                      onChange={(e) => setPhone(e.target.value)}
+                      placeholder="+251 ..."
+                      className="w-full px-4 py-3 rounded-xl border border-sand-200 bg-sand-50 text-kuriftu-900 text-sm focus:border-kuriftu-500 focus:ring-2 focus:ring-kuriftu-200 transition-all placeholder:text-sand-300"
+                    />
+                  </div>
                 </div>
               )}
 
-              <div>
+              <div className={`transition-all duration-300 ${focusedInput && focusedInput !== 'email' ? 'opacity-40 blur-[1px]' : ''}`}>
                 <label className="block text-xs font-bold text-sand-600 uppercase tracking-wider mb-1.5">
                   Email Address
                 </label>
@@ -613,13 +945,15 @@ export default function LandingPage({ onLogin }) {
                   type="email"
                   required
                   value={email}
+                  onFocus={() => setFocusedInput('email')}
+                  onBlur={() => setFocusedInput(null)}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="you@example.com"
                   className="w-full px-4 py-3 rounded-xl border border-sand-200 bg-sand-50 text-kuriftu-900 text-sm focus:border-kuriftu-500 focus:ring-2 focus:ring-kuriftu-200 transition-all placeholder:text-sand-300"
                 />
               </div>
 
-              <div>
+              <div className={`transition-all duration-300 ${focusedInput && focusedInput !== 'password' ? 'opacity-40 blur-[1px]' : ''}`}>
                 <label className="block text-xs font-bold text-sand-600 uppercase tracking-wider mb-1.5">
                   Password
                 </label>
@@ -627,6 +961,8 @@ export default function LandingPage({ onLogin }) {
                   type="password"
                   required
                   value={password}
+                  onFocus={() => setFocusedInput('password')}
+                  onBlur={() => setFocusedInput(null)}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
                   className="w-full px-4 py-3 rounded-xl border border-sand-200 bg-sand-50 text-kuriftu-900 text-sm focus:border-kuriftu-500 focus:ring-2 focus:ring-kuriftu-200 transition-all placeholder:text-sand-300"
@@ -634,7 +970,7 @@ export default function LandingPage({ onLogin }) {
               </div>
 
               {authMode === "signup" && (
-                <div>
+                <div className={`transition-all duration-300 ${focusedInput && focusedInput !== 'confirm' ? 'opacity-40 blur-[1px]' : ''}`}>
                   <label className="block text-xs font-bold text-sand-600 uppercase tracking-wider mb-1.5">
                     Confirm Password
                   </label>
@@ -642,6 +978,8 @@ export default function LandingPage({ onLogin }) {
                     type="password"
                     required
                     value={confirmPassword}
+                    onFocus={() => setFocusedInput('confirm')}
+                    onBlur={() => setFocusedInput(null)}
                     onChange={(e) => setConfirmPassword(e.target.value)}
                     placeholder="••••••••"
                     className="w-full px-4 py-3 rounded-xl border border-sand-200 bg-sand-50 text-kuriftu-900 text-sm focus:border-kuriftu-500 focus:ring-2 focus:ring-kuriftu-200 transition-all placeholder:text-sand-300"
