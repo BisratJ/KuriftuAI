@@ -132,3 +132,11 @@ textarea:focus {
 .view-transition {
   animation: fade-in 0.15s ease-out;
 }
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}

@@ -321,3 +321,132 @@ export const CONCIERGE_RESPONSES = {
     suggestions: ["What's the dress code?", "Can we get a later time?", "Wine pairing options?", "Thank you!"],
   },
 };
+// ─── Content Data ──────────────────────────────────────────────────────────
+export const ACTIVITIES = [
+  { 
+    id: "waterpark",
+    name: "Kuriftu Water Park", 
+    loc: "Bishoftu", 
+    icon: "🎢", 
+    short: "East Africa's largest and most exciting water park.",
+    detail: "Located adjacent to our Bishoftu resort, this massive 30,000 sqm water park features thrilling boomerang and spiral slides, a wave pool, a relaxing lazy river, and dedicated children's water houses. Fun for the whole family.",
+    img: "https://images.pexels.com/photos/1449767/pexels-photo-1449767.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
+    features: ["Boomerang Slides", "Massive Wave Pool", "Lazy River", "Performance Center"]
+  },
+  { 
+    id: "zipline",
+    name: "Entoto Adventure Ziplining", 
+    loc: "Entoto", 
+    icon: "🧗", 
+    short: "Soar above the eucalyptus canopy in Addis Ababa.",
+    detail: "Experience the thrill of our professional-grade zipline and aerial rope courses suspended high in the lush eucalyptus forests of Entoto Mountain. A safe, exhilarating adventure with panoramic views.",
+    img: "https://images.pexels.com/photos/3411135/pexels-photo-3411135.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
+    features: ["Forest Zipline", "Rope Courses", "Wall Climbing", "Safe & Certified"]
+  },
+  { 
+    id: "boattour",
+    name: "Lake Tana Boat Tours", 
+    loc: "Bahir Dar", 
+    icon: "⛴️", 
+    short: "Cruise to historic island monasteries and the Blue Nile.",
+    detail: "Depart directly from the resort shores for a scenic boat ride across Lake Tana. Visit ancient, forest-veiled monasteries like Ura Kidane Mehret on the Zege Peninsula and spot hippos near the Blue Nile source.",
+    img: "https://images.pexels.com/photos/402026/pexels-photo-402026.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
+    features: ["Monastery Visits", "Blue Nile Source", "Bird Watching", "Hippo Spotting"]
+  },
+  { 
+    id: "spa",
+    name: "Kuriftu Forest Spa", 
+    loc: "All Resorts", 
+    icon: "🧘", 
+    short: "Award-winning sanctuaries for Ethiopian coffee-based rituals.",
+    detail: "Our world-class spa facilities blend ancient wellness traditions with modern luxury. Relax in the sauna and steam room, then experience a signature deep-tissue massage or rejuvenating coffee scrub.",
+    img: "https://images.pexels.com/photos/683506/pexels-photo-683506.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
+    features: ["Coffee Scrubs", "Deep Tissue Massage", "Sauna & Steam", "Forest Atmosphere"]
+  },
+  { 
+    id: "kayaking",
+    name: "Lake Kuriftu Kayaking", 
+    loc: "Bishoftu", 
+    icon: "🛶", 
+    short: "Serene paddling on the calm waters of the volcanic crater lake.",
+    detail: "Grab a kayak and glide across the tranquil, dark blue waters of Lake Kuriftu. Enjoy a unique perspective of the lush resort gardens and abundant birdlife from the center of the crater lake.",
+    img: "https://images.pexels.com/photos/2405080/pexels-photo-2405080.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
+    features: ["Complimentary Craft", "Peaceful Waters", "Bird Watching", "Sunset Paddles"]
+  },
+  { 
+    id: "cinema",
+    name: "Private Resort Cinema", 
+    loc: "Bishoftu", 
+    icon: "🎬", 
+    short: "Relaxing cinematic experience with plush lounging.",
+    detail: "Unwind after a day of activities in our private screening room. Sink into cozy cushions and enjoy movies in a comfortable, intimate setting perfect for couples and families alike.",
+    img: "https://images.pexels.com/photos/6087685/pexels-photo-6087685.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
+    features: ["HD Projection", "Plush Cushions", "Intimate Setting", "Evening Entertainment"]
+  }
+];
+
+export const RESTAURANTS = [
+  { 
+    id: "1963restaurant",
+    name: "1963 Restaurant", 
+    loc: "African Village", 
+    special: "Continental African Cuisine", 
+    detail: "Named after the founding year of the African Union, this signature restaurant offers a culinary journey across the African continent, featuring diverse, masterfully prepared dishes celebrating pan-African flavors.",
+    img: "https://images.pexels.com/photos/1126728/pexels-photo-1126728.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
+    features: ["Pan-African Menu", "Thematic Decor", "Cultural Ambiance", "Signature Dining"]
+  },
+  { 
+    id: "lakefront",
+    name: "Lakefront Restaurant", 
+    loc: "Bishoftu", 
+    special: "Lake View Dining & Coffee", 
+    detail: "Enjoy uninterrupted views of Lake Kuriftu from our outdoor seating deck. Our culinary approach weaves traditional Ethiopian specialties with international fare, complemented by the famous Ethiopian coffee ceremony.",
+    img: "https://images.pexels.com/photos/1358045/pexels-photo-1358045.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
+    features: ["Outdoor Deck", "Lake Views", "Ethiopian Specialties", "International Fare"]
+  },
+  { 
+    id: "summitgrill",
+    name: "Summit Grill Restaurant", 
+    loc: "African Village", 
+    special: "Panoramic Dining heights", 
+    detail: "Perched at the highest point of the African Village in Shaggar City, the Summit Grill provides breathtaking panoramic skyline views accompanied by a sophisticated menu of grilled international favorites.",
+    img: "https://images.pexels.com/photos/286283/pexels-photo-286283.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
+    features: ["Skyline Views", "Premium Grill", "Signature Cocktails", "Sophisticated Atmosphere"]
+  },
+  { 
+    id: "kuriftulaketana",
+    name: "Kuriftu Lake Tana Restaurant", 
+    loc: "Bahir Dar", 
+    special: "Fresh Catch & Traditional Fare", 
+    detail: "Situated right on the shores of Lake Tana, this scenic dining spot specializes in fresh fish sourced from the lake, alongside traditional Ethiopian meat dishes, providing a tranquil waterfront culinary experience.",
+    img: "https://images.pexels.com/photos/1267320/pexels-photo-1267320.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
+    features: ["Waterfront Terrace", "Fresh Local Catch", "Traditional Meats", "Lake Breezes"]
+  },
+  { 
+    id: "entotodining",
+    name: "Kuriftu Entoto Restaurant", 
+    loc: "Entoto", 
+    special: "Highland Forest Cuisine", 
+    detail: "Nestled in the cool highlands of Entoto Park, relax at modern cafes and dining spots serving organic coffee, local cuisine, and light gourmet fare—the perfect way to recharge after forest adventures.",
+    img: "https://images.pexels.com/photos/1640777/pexels-photo-1640777.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
+    features: ["Highland Atmosphere", "Organic Coffee", "Modern Cafes", "Scenic Forest Setting"]
+  },
+  { 
+    id: "articoffee",
+    name: "Artisan Coffee Kuriftu", 
+    loc: "All Locations", 
+    special: "Micro-lot Specialty Brews", 
+    detail: "A celebration of Ethiopia's gift to the world. Our baristas serve expertly roasted micro-lot coffees from regional origins like Sidamo, holding true to the renowned Ethiopian coffee ceremony and exceptional daily brews.",
+    img: "https://images.pexels.com/photos/302899/pexels-photo-302899.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
+    features: ["Coffee Ceremony", "Specialty Roasts", "Artisan Baristas", "Ethiopian Heritage"]
+  }
+];
+
+export const RESORT_IMAGES = {
+  bishoftu: "https://images.pexels.com/photos/258154/pexels-photo-258154.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
+  bahirdar: "https://images.pexels.com/photos/1001965/pexels-photo-1001965.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
+  adama: "https://images.pexels.com/photos/338504/pexels-photo-338504.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
+  langano: "https://images.pexels.com/photos/1134176/pexels-photo-1134176.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
+  "african-village": "https://images.pexels.com/photos/1640422/pexels-photo-1640422.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
+  entoto: "https://images.pexels.com/photos/237272/pexels-photo-237272.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
+};

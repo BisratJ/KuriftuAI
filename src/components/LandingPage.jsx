@@ -284,7 +284,7 @@ export default function LandingPage({ onLogin }) {
       loc: "Bahir Dar", 
       special: "Fresh Catch & Traditional Fare", 
       detail: "Situated right on the shores of Lake Tana, this scenic dining spot specializes in fresh fish sourced from the lake, alongside traditional Ethiopian meat dishes, providing a tranquil waterfront culinary experience.",
-      img: "https://images.unsplash.com/photo-1414450397866-85f90db48714?auto=format&fit=crop&w=800&q=80",
+      img: "https://kuriftu-media.s3.amazonaws.com/tana/dining/1.webp",
       features: ["Waterfront Terrace", "Fresh Local Catch", "Traditional Meats", "Lake Breezes"]
     },
     { 
@@ -293,7 +293,7 @@ export default function LandingPage({ onLogin }) {
       loc: "Entoto", 
       special: "Highland Forest Cuisine", 
       detail: "Nestled in the cool highlands of Entoto Park, relax at modern cafes and dining spots serving organic coffee, local cuisine, and light gourmet fare—the perfect way to recharge after forest adventures.",
-      img: "https://images.unsplash.com/photo-1541173103185-1fe29fd21d7b?auto=format&fit=crop&w=800&q=80",
+      img: "https://kuriftu-media.s3.amazonaws.com/tana/dining/3.webp",
       features: ["Highland Atmosphere", "Organic Coffee", "Modern Cafes", "Scenic Forest Setting"]
     },
     { 
@@ -302,7 +302,7 @@ export default function LandingPage({ onLogin }) {
       loc: "All Locations", 
       special: "Micro-lot Specialty Brews", 
       detail: "A celebration of Ethiopia's gift to the world. Our baristas serve expertly roasted micro-lot coffees from regional origins like Sidamo, holding true to the renowned Ethiopian coffee ceremony and exceptional daily brews.",
-      img: "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&w=800&q=80",
+      img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRWHrFKRH3Ch5P35uxM8h3MS0-1pQJpL23xQg&s",
       features: ["Coffee Ceremony", "Specialty Roasts", "Artisan Baristas", "Ethiopian Heritage"]
     }
   ];
@@ -438,39 +438,34 @@ export default function LandingPage({ onLogin }) {
       >
         {/* MP4 video background */}
         <div className="absolute inset-0 overflow-hidden">
-          {!videoFailed ? (
-            <video
-              ref={heroVideoRef}
-              autoPlay
-              muted
-              loop
-              playsInline
-              preload="auto"
-              onError={() => setVideoFailed(true)}
-              className="absolute"
-              style={{
-                top: "50%",
-                left: "50%",
-                transform: "translate(-50%, -50%)",
-                width: "177.78vh",
-                height: "56.25vw",
-                minWidth: "100%",
-                minHeight: "100%",
-                objectFit: "cover",
-              }}
-            >
-              <source
-                src="https://kuriftu-media.s3.amazonaws.com/africanvillage/african_village720p.mp4"
-                type="video/mp4"
-              />
-            </video>
-          ) : (
-            <img
-              src={LOCATION_IMAGES["african-village"]}
-              alt="Kuriftu African Village"
-              className="absolute inset-0 w-full h-full object-cover"
-            />
-          )}
+          {/* Fallback image always behind the video */}
+          <img
+            src={LOCATION_IMAGES["african-village"]}
+            alt="Kuriftu African Village"
+            className="absolute inset-0 w-full h-full object-cover"
+          />
+          {/* Local video from /public — no CORS issues */}
+          <video
+            ref={heroVideoRef}
+            autoPlay
+            muted
+            loop
+            playsInline
+            preload="auto"
+            className="absolute"
+            style={{
+              top: "50%",
+              left: "50%",
+              transform: "translate(-50%, -50%)",
+              width: "177.78vh",
+              height: "56.25vw",
+              minWidth: "100%",
+              minHeight: "100%",
+              objectFit: "cover",
+            }}
+          >
+            <source src="/herovideo.mp4" type="video/mp4" />
+          </video>
           {/* Dark overlay */}
           <div className="absolute inset-0" style={{ background: "linear-gradient(160deg, rgba(7,26,15,0.72) 0%, rgba(7,26,15,0.55) 50%, rgba(7,26,15,0.75) 100%)" }} />
         </div>

@@ -17,6 +17,8 @@ module.exports = {
           700: '#92400e',
           800: '#6b3a10',
           900: '#2c1810',
+          green: '#0d3b2e',
+          forest: '#065f46',
         },
         sand: {
           50: '#faf8f5',
