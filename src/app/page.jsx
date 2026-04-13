@@ -100,6 +100,8 @@ export default function Home() {
   const [notifs, setNotifs] = useState([]);
   const [showNotifPanel, setShowNotifPanel] = useState(false);
 
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
   // ─── Session Restoration on Mount ───────────────────────────────────
   useEffect(() => {
     const session = loadSession();
@@ -170,6 +172,12 @@ export default function Home() {
     setIsLoggedIn(false);
     setUserRole("admin");
     setActiveView("dashboard");
+    setIsMobileMenuOpen(false);
+  };
+
+  const handleNavClick = (id) => {
+    setActiveView(id);
+    setIsMobileMenuOpen(false); // Close menu on mobile after navigation
   };
 
   const handleToggleNotifs = () => {
@@ -200,12 +208,22 @@ export default function Home() {
   }
 
   return (
-    <div className="flex h-screen font-sans text-kuriftu-900 bg-[#f8f6f1]">
+    <div className={`flex h-screen font-sans transition-colors duration-500 overflow-hidden ${userRole === 'user' ? 'bg-[#07130c] text-white' : 'bg-[#0d1f16] text-white'}`}
+         style={{ backgroundImage: 'radial-gradient(rgba(202, 138, 4, 0.04) 1px, transparent 1px)', backgroundSize: '40px 40px' }}>
+      
+      {/* Mobile Overlay */}
+      {isMobileMenuOpen && (
+        <div 
+          className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 lg:hidden"
+          onClick={() => setIsMobileMenuOpen(false)}
+        />
+      )}
+
       {/* Sidebar */}
-      <div className={`w-[260px] flex flex-col flex-shrink-0 z-10 transition-colors duration-500 ${userRole === "user" ? "bg-[#0d1f16] text-white" : "bg-white border-r border-sand-200 shadow-sm"}`}>
+      <div className={`fixed lg:static inset-y-0 left-0 w-[260px] flex flex-col flex-shrink-0 z-50 transition-all duration-300 transform ${isMobileMenuOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"} ${userRole === "user" ? "bg-[#0d1f16] text-white border-r border-white/10 shadow-2xl" : "bg-white border-r border-sand-200 shadow-sm"}`}>
         {/* Logo */}
-        <div className={`p-8 ${userRole === "user" ? "border-b border-white/5" : "border-b border-sand-200"}`}>
-          <div className="flex items-center gap-4 cursor-pointer" onClick={() => setActiveView(userRole === "user" ? "user-home" : "dashboard")}>
+        <div className={`p-6 lg:p-8 flex items-center justify-between ${userRole === "user" ? "border-b border-white/5" : "border-b border-sand-200"}`}>
+          <div className="flex items-center gap-4 cursor-pointer" onClick={() => handleNavClick(userRole === "user" ? "user-home" : "dashboard")}>
             <div className={`w-12 h-12 rounded-full flex items-center justify-center p-1.5 shadow-2xl transition-all duration-500 ${userRole === "user" ? "bg-white/10 backdrop-blur-md border border-white/20" : "bg-kuriftu-50 border border-kuriftu-100"}`}>
               <img src="/kuriftu-logo.png" alt="Kuriftu Logo" className="w-full h-full object-contain" />
             </div>
@@ -218,32 +236,36 @@ export default function Home() {
               </div>
             </div>
           </div>
+          {/* Mobile Close Button */}
+          <button className="lg:hidden p-2 rounded-lg bg-kuriftu-500/20 text-kuriftu-700" onClick={() => setIsMobileMenuOpen(false)}>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+          </button>
         </div>
 
-        <nav className="p-4 flex-1 overflow-y-auto mt-4 custom-scrollbar">
+        <nav className="p-4 flex-1 overflow-y-auto mt-2 lg:mt-4 custom-scrollbar">
           {navSections.map((section) => (
             <div key={section.label} className="mb-6">
-              <div className={`text-[10px] font-black uppercase tracking-[0.25em] mb-4 px-3 ${userRole === "user" ? "text-white/20" : "text-sand-400"}`}>
+              <div className={`text-[10px] font-black uppercase tracking-[0.25em] mb-4 px-3 ${userRole === "user" ? "text-kuriftu-300" : "text-sand-500"}`}>
                 {section.label}
               </div>
               {section.items.map((item) => (
                 <button
                   key={item.id}
-                  onClick={() => setActiveView(item.id)}
+                  onClick={() => handleNavClick(item.id)}
                   className={`flex items-center gap-4 w-full px-4 py-3 rounded-xl border-none text-[13px] cursor-pointer text-left transition-all duration-300 mb-1.5 group relative overflow-hidden ${
                     activeView === item.id
                       ? userRole === "user"
                         ? "bg-kuriftu-500 text-kuriftu-950 font-black shadow-xl shadow-kuriftu-500/20 active:scale-95"
                         : "bg-kuriftu-700 text-white font-semibold shadow-md shadow-kuriftu-700/20"
                       : userRole === "user"
-                        ? "bg-transparent text-white/50 font-bold hover:bg-white/5 hover:text-white"
-                        : "bg-transparent text-sand-600 font-medium hover:bg-sand-50 hover:text-kuriftu-800"
+                        ? "bg-transparent text-white font-bold hover:bg-white/10"
+                        : "bg-transparent text-sand-800 font-bold hover:bg-sand-50 hover:text-kuriftu-900"
                   }`}
                 >
                   <span className={`transition-all duration-300 ${
                     activeView === item.id 
                       ? userRole === "user" ? "text-kuriftu-950 scale-110" : "text-white" 
-                      : userRole === "user" ? "text-white/30 group-hover:text-kuriftu-300" : "text-sand-400 group-hover:text-kuriftu-600"
+                      : userRole === "user" ? "text-white group-hover:text-kuriftu-300" : "text-sand-500 group-hover:text-kuriftu-600"
                   }`}>
                     {item.icon}
                   </span>
@@ -277,9 +299,17 @@ export default function Home() {
       {/* Main content */}
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden relative">
         {/* Top Header */}
-        <header className="h-16 flex-shrink-0 bg-white/80 backdrop-blur-md border-b border-sand-200 px-6 flex items-center justify-between z-20">
-          <div className="flex items-center gap-4">
-             <div className="text-xs font-black text-sand-400 uppercase tracking-[0.2em]">{activeView.replace('user-', '').replace('-', ' ')}</div>
+        <header className={`h-16 flex-shrink-0 border-b z-20 transition-all duration-500 ${userRole === 'user' ? 'bg-[#07130c]/80 backdrop-blur-md border-white/5' : 'bg-[#0d1f16]/80 backdrop-blur-md border-white/10 shadow-2xl shadow-black/20'}`}>
+          <div className="flex items-center justify-between px-4 lg:px-6 h-full">
+          <div className="flex items-center gap-3">
+            {/* Mobile Menu Toggle */}
+            <button 
+              onClick={() => setIsMobileMenuOpen(true)}
+              className="lg:hidden p-2 rounded-xl bg-white/5 border border-white/10 text-white hover:bg-white/10 transition-colors"
+            >
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
+            </button>
+             <div className="text-[10px] md:text-xs font-black text-sand-400 uppercase tracking-[0.2em] hidden sm:block">{activeView.replace('user-', '').replace('-', ' ')}</div>
           </div>
           
           <div className="flex items-center gap-4">
@@ -332,14 +362,15 @@ export default function Home() {
             {/* Role/Section Info */}
             <div className="h-8 border-l border-sand-200 mx-2 hidden md:block" />
             
-            <div className="flex items-center gap-3 bg-sand-50 px-4 py-1.5 rounded-full border border-sand-100">
+            <div className="flex items-center gap-3 bg-white/5 px-4 py-1.5 rounded-full border border-white/10">
                <div className="text-right">
-                  <div className="text-[10px] font-black text-kuriftu-900 leading-none">{userRole === 'user' ? userData.name : 'Super Admin'}</div>
+                  <div className="text-[10px] font-black text-white leading-none">{userRole === 'user' ? userData.name : 'Super Admin'}</div>
                   <div className="text-[8px] font-bold text-kuriftu-400 uppercase tracking-widest mt-1">{userRole.toUpperCase()} SESSION</div>
                </div>
-               <div className="w-8 h-8 rounded-lg bg-kuriftu-950 flex items-center justify-center p-1 cursor-pointer hover:scale-110 transition-all" onClick={() => userRole === 'admin' ? handleLogin({role: 'user'}) : handleLogin({role: 'admin'})}>
+                <div className="w-8 h-8 rounded-lg bg-kuriftu-950 flex items-center justify-center p-1 cursor-pointer hover:scale-110 transition-all border border-kuriftu-300/20" onClick={() => userRole === 'admin' ? handleLogin({role: 'user'}) : handleLogin({role: 'admin'})}>
                   <img src="/kuriftu-logo.png" alt="Profile" className="w-full h-full object-contain filter invert" />
-               </div>
+                </div>
+              </div>
             </div>
           </div>
         </header>

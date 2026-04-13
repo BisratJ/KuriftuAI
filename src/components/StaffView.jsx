@@ -39,29 +39,31 @@ export default function StaffView() {
         <p className="text-sm text-sand-500 mt-1">AI-optimized scheduling, performance tracking, and workload balancing</p>
       </div>
 
-      <div className="grid grid-cols-2 lg:grid-cols-5 gap-3 lg:gap-4 mb-6">
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 lg:gap-4 mb-6">
         <MetricCard label="On Duty" value={`${onDuty}/${STAFF_MEMBERS.length}`} />
         <MetricCard label="Avg Rating" value={avgRating} change={2.1} />
         <MetricCard label="Tasks Today" value={totalTasks} change={8.5} />
         <MetricCard label="Avg Hours/Week" value="34.4" change={-3.2} />
-        <MetricCard label="AI Schedule Savings" value="$480" change={22} />
+        <MetricCard label="AI Schedule Savings" value="$480" change={22} className="col-span-2 md:col-span-1" />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-[1.3fr_1fr] gap-4">
         {/* Staff Roster */}
-        <div className="bg-white border border-sand-200 rounded-lg p-5">
-          <div className="flex items-center justify-between mb-3 gap-3">
-            <div className="text-sm font-semibold text-kuriftu-900">Staff Roster</div>
-            <SearchInput value={search} onChange={setSearch} placeholder="Search staff..." className="w-48" />
+        <div className="bg-white border border-sand-200 rounded-xl p-4 md:p-6 shadow-sm overflow-hidden">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4 gap-4">
+            <div className="text-sm md:text-base font-bold text-kuriftu-900">Staff Roster</div>
+            <SearchInput value={search} onChange={setSearch} placeholder="Search staff..." className="w-full sm:w-48" />
           </div>
-          <div className="flex gap-1.5 mb-3">
+          <div className="flex gap-1.5 mb-4 overflow-x-auto no-scrollbar pb-1">
             {[{id: "all", label: "All"}, {id: "on_duty", label: "On Duty"}, {id: "off_duty", label: "Off Duty"}, {id: "on_break", label: "On Break"}].map((f) => (
-              <button key={f.id} onClick={() => setStatusFilter(f.id)} className={`px-2.5 py-1 rounded-lg text-[11px] font-medium transition-all ${statusFilter === f.id ? "bg-kuriftu-700 text-white" : "bg-sand-50 text-sand-500 hover:bg-sand-100"}`}>
+              <button key={f.id} onClick={() => setStatusFilter(f.id)} className={`px-4 py-1.5 rounded-lg text-xs font-bold transition-all whitespace-nowrap ${statusFilter === f.id ? "bg-kuriftu-700 text-white" : "bg-sand-50 text-sand-500 hover:bg-sand-100"}`}>
                 {f.label}
               </button>
             ))}
           </div>
-          <div className="overflow-x-auto">
+          
+          {/* Desktop Table View */}
+          <div className="hidden md:block overflow-x-auto">
             <table className="w-full border-collapse text-[13px]">
               <thead>
                 <tr className="border-b border-sand-200">
@@ -108,6 +110,41 @@ export default function StaffView() {
                 })}
               </tbody>
             </table>
+          </div>
+
+          {/* Mobile Staff Cards */}
+          <div className="md:hidden space-y-3">
+             {filteredStaff.length === 0 ? (
+               <div className="text-center py-8 text-sand-400 text-sm">No staff match your search</div>
+             ) : (
+               filteredStaff.map((member) => {
+                 const ss = STATUS_STYLE[member.status];
+                 return (
+                   <div key={member.id} className="p-4 border border-sand-100 rounded-2xl bg-sand-50/20">
+                     <div className="flex items-center justify-between mb-3">
+                        <div className="flex items-center gap-3">
+                          <div className="w-10 h-10 rounded-full bg-sand-100 flex items-center justify-center font-bold text-kuriftu-700">{member.photo}</div>
+                          <div>
+                             <div className="font-bold text-kuriftu-900">{member.name}</div>
+                             <div className="text-[10px] uppercase font-black tracking-widest text-sand-400">{member.department}</div>
+                          </div>
+                        </div>
+                        <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-wider ${ss.bg} ${ss.text}`}>
+                           <span className={`w-1.5 h-1.5 rounded-full ${ss.dot}`} />
+                           {ss.label}
+                        </span>
+                     </div>
+                     <div className="flex items-center justify-between py-2 border-t border-dashed border-sand-200">
+                        <div className="text-[11px] text-sand-600 font-bold">{member.role}</div>
+                        <div className="flex items-center gap-1">
+                           <span className="text-amber-400 text-xs">★</span>
+                           <span className="text-[11px] font-black text-kuriftu-900">{member.rating}</span>
+                        </div>
+                     </div>
+                   </div>
+                 );
+               })
+             )}
           </div>
         </div>
 

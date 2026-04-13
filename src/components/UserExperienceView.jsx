@@ -62,9 +62,36 @@ const INITIAL_BOOKINGS = [
   { id: "B-2941", resort: "Bishoftu", room: "Lakeside Suite", status: "confirmed", checkIn: "2026-04-15", checkOut: "2026-04-18", amount: 840, guests: 2 },
   { id: "B-3012", resort: "Entoto", room: "Forest Bungalow", status: "confirmed", checkIn: "2026-05-20", checkOut: "2026-05-23", amount: 720, guests: 2 },
   { id: "B-3105", resort: "Langano", room: "Family Cabin", status: "confirmed", checkIn: "2026-06-12", checkOut: "2026-06-15", amount: 585, guests: 4 },
+  { id: "B-3200", resort: "Bahir Dar", room: "Lakeside Suite", status: "confirmed", checkIn: "2026-07-01", checkOut: "2026-07-04", amount: 840, guests: 2 },
+  { id: "B-3201", resort: "African Village", room: "Presidential Suite", status: "confirmed", checkIn: "2026-07-10", checkOut: "2026-07-13", amount: 1950, guests: 2 },
+  
+  { id: "B-P001", resort: "Bishoftu", room: "Standard Room", status: "pending", checkIn: "2026-08-01", checkOut: "2026-08-03", amount: 240, guests: 2 },
+  { id: "B-P002", resort: "Entoto", room: "Forest Bungalow", status: "pending", checkIn: "2026-08-10", checkOut: "2026-08-13", amount: 720, guests: 1 },
+  { id: "B-P003", resort: "Adama", room: "Lakeside Suite", status: "pending", checkIn: "2026-08-20", checkOut: "2026-08-24", amount: 1120, guests: 2 },
+  { id: "B-P004", resort: "Bahir Dar", room: "Family Cabin", status: "pending", checkIn: "2026-09-01", checkOut: "2026-09-04", amount: 585, guests: 3 },
+  
   { id: "B-2837", resort: "African Village", room: "Presidential Suite", status: "completed", checkIn: "2026-03-01", checkOut: "2026-03-04", amount: 1950, guests: 3 },
   { id: "B-2751", resort: "Bahir Dar", room: "Standard Room", status: "completed", checkIn: "2026-02-15", checkOut: "2026-02-17", amount: 240, guests: 2 },
   { id: "B-2618", resort: "Adama", room: "Lakeside Suite", status: "completed", checkIn: "2026-01-10", checkOut: "2026-01-14", amount: 1120, guests: 2 },
+  { id: "B-C001", resort: "Bishoftu", room: "Family Cabin", status: "completed", checkIn: "2026-01-01", checkOut: "2026-01-04", amount: 585, guests: 4 },
+  { id: "B-C002", resort: "Entoto", room: "Standard Room", status: "completed", checkIn: "2025-12-20", checkOut: "2025-12-23", amount: 360, guests: 2 },
+  { id: "B-C003", resort: "Langano", room: "Forest Bungalow", status: "completed", checkIn: "2025-12-10", checkOut: "2025-12-13", amount: 720, guests: 2 },
+  { id: "B-C004", resort: "Bahir Dar", room: "Presidential Suite", status: "completed", checkIn: "2025-11-15", checkOut: "2025-11-18", amount: 1950, guests: 2 },
+  
+  { id: "B-X001", resort: "Bishoftu", room: "Lakeside Suite", status: "confirmed", checkIn: "2026-10-05", checkOut: "2026-10-08", amount: 840, guests: 2 },
+  { id: "B-X002", resort: "Entoto", room: "Forest Bungalow", status: "confirmed", checkIn: "2026-11-12", checkOut: "2026-11-15", amount: 720, guests: 1 },
+  { id: "B-X003", resort: "Langano", room: "Standard Room", status: "confirmed", checkIn: "2026-12-20", checkOut: "2026-12-23", amount: 360, guests: 2 },
+  { id: "B-X004", resort: "Adama", room: "Presidential Suite", status: "confirmed", checkIn: "2027-01-10", checkOut: "2027-01-14", amount: 2600, guests: 2 },
+
+  { id: "B-Y001", resort: "African Village", room: "Standard Room", status: "pending", checkIn: "2026-10-15", checkOut: "2026-10-17", amount: 240, guests: 1 },
+  { id: "B-Y002", resort: "Bishoftu", room: "Family Cabin", status: "pending", checkIn: "2026-11-01", checkOut: "2026-11-04", amount: 585, guests: 4 },
+  { id: "B-Y003", resort: "Entoto", room: "Standard Room", status: "pending", checkIn: "2026-12-10", checkOut: "2026-12-13", amount: 360, guests: 2 },
+  { id: "B-Y004", resort: "Bahir Dar", room: "Lakeside Suite", status: "pending", checkIn: "2027-02-05", checkOut: "2027-02-08", amount: 840, guests: 2 },
+
+  { id: "B-Z001", resort: "Adama", room: "Standard Room", status: "completed", checkIn: "2025-09-01", checkOut: "2025-09-03", amount: 240, guests: 2 },
+  { id: "B-Z002", resort: "Langano", room: "Family Cabin", status: "completed", checkIn: "2025-08-15", checkOut: "2025-08-18", amount: 585, guests: 3 },
+  { id: "B-Z003", resort: "African Village", room: "Lakeside Suite", status: "completed", checkIn: "2025-07-10", checkOut: "2025-07-13", amount: 840, guests: 2 },
+  { id: "B-Z004", resort: "Entoto", room: "Presidential Suite", status: "completed", checkIn: "2025-06-01", checkOut: "2025-06-04", amount: 1950, guests: 2 },
 ];
 
 function formatDate(d) {
@@ -529,13 +556,12 @@ export default function UserExperienceView({ section = "user-home", userData, up
                 <span className="w-5 h-5 rounded-full bg-amber-100 text-amber-700 flex items-center justify-center text-[10px] font-black">{pending.length}</span>
               </div>
             </div>
-            <div className="flex gap-12 overflow-x-auto pb-12 snap-x snap-mandatory no-scrollbar -mx-4 px-4 sm:mx-0 sm:px-0">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
               {pending.map(booking => (
-                <div key={booking.id} className="snap-center flex-shrink-0 relative">
+                <div key={booking.id} className="relative">
                   <BookingCard booking={booking} onManage={() => setManagingBooking(booking)} />
                 </div>
               ))}
-              <div className="flex-shrink-0 w-8 md:hidden" />
             </div>
           </div>
         )}
@@ -549,13 +575,12 @@ export default function UserExperienceView({ section = "user-home", userData, up
                 <span className="w-5 h-5 rounded-full bg-kuriftu-100 text-kuriftu-700 flex items-center justify-center text-[10px] font-black">{confirmed.length}</span>
               </div>
             </div>
-            <div className="flex gap-12 overflow-x-auto pb-12 snap-x snap-mandatory no-scrollbar -mx-4 px-4 sm:mx-0 sm:px-0">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
               {confirmed.map(booking => (
-                <div key={booking.id} className="snap-center flex-shrink-0 relative">
+                <div key={booking.id} className="relative">
                   <BookingCard booking={booking} onManage={() => setManagingBooking(booking)} />
                 </div>
               ))}
-              <div className="flex-shrink-0 w-8 md:hidden" />
             </div>
           </div>
         )}
@@ -563,14 +588,13 @@ export default function UserExperienceView({ section = "user-home", userData, up
         {/* Past / Cancelled */}
         {past.length > 0 && (
           <div>
-            <div className="text-xs font-black text-sand-400 uppercase tracking-[0.25em] mb-6">Past Journeys</div>
-            <div className="flex gap-12 overflow-x-auto pb-12 snap-x snap-mandatory no-scrollbar -mx-4 px-4 sm:mx-0 sm:px-0">
+            <div className="text-xs font-black text-sand-500 uppercase tracking-[0.25em] mb-6">Past Journeys</div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
               {past.map(booking => (
-                <div key={booking.id} className="snap-center flex-shrink-0 relative">
+                <div key={booking.id} className="relative">
                   <BookingCard booking={booking} onManage={() => setManagingBooking(booking)} past />
                 </div>
               ))}
-              <div className="flex-shrink-0 w-8 md:hidden" />
             </div>
           </div>
         )}
@@ -590,9 +614,12 @@ export default function UserExperienceView({ section = "user-home", userData, up
   // ─── ACTIVITIES VIEW ──────────────────────────────────────────────
   if (section === "user-activities") {
     return (
-      <div className="p-6 lg:p-10 animate-fade-in relative z-10">
+      <div className="p-6 lg:p-10 animate-fade-in relative z-10 min-h-screen bg-[#07130c]" 
+           style={{ backgroundImage: 'radial-gradient(rgba(202, 138, 4, 0.05) 0.8px, transparent 0.8px)', backgroundSize: '32px 32px' }}>
+        {Toast}
+        {BrandWatermark}
         {/* Signature Header */}
-        <div className="mb-12 relative overflow-hidden rounded-2xl p-10 bg-kuriftu-green text-white shadow-2xl border border-white/5">
+        <div className="mb-12 relative overflow-hidden rounded-3xl p-10 bg-gradient-to-br from-kuriftu-green to-kuriftu-900 text-white shadow-2xl border border-white/5">
           <div className="absolute top-0 right-0 w-96 h-96 bg-kuriftu-300/10 rounded-full blur-[100px] -translate-y-1/2 translate-x-1/2" />
           <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-8">
             <div className="max-w-xl">
@@ -626,86 +653,43 @@ export default function UserExperienceView({ section = "user-home", userData, up
           </div>
         </div>
 
-        <div className="flex gap-8 overflow-x-auto pb-12 snap-x snap-mandatory no-scrollbar -mx-4 px-4 sm:mx-0 sm:px-0">
+        <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6">
           {BOOKABLE_ACTIVITIES.filter(a => activityFilter === "All" || a.loc === activityFilter || a.loc === "All Resorts").map(activity => (
-            <div key={activity.id} className="snap-center flex-shrink-0">
-              <div 
-                onClick={() => expandedCard === activity.id ? setExpandedCard(null) : setExpandedCard(activity.id)}
-                className={`relative w-[320px] h-[450px] bg-[#fdfbf7] rounded-sm shadow-xl flex overflow-hidden group cursor-pointer transition-all duration-500 transform hover:-translate-y-2 border border-sand-200/50 ${expandedCard === activity.id ? 'scale-[1.02] z-50 shadow-2xl ring-4 ring-kuriftu-300/20' : ''}`}
-                style={{
-                  boxShadow: "0 10px 40px -10px rgba(0,0,0,0.2), inset 0 0 40px rgba(0,0,0,0.02)",
-                  backgroundImage: "radial-gradient(#f0eada 0.5px, transparent 0.5px)",
-                  backgroundSize: "20px 20px"
-                }}
-              >
-                {/* Main Content */}
-                <div className="flex-1 flex flex-col min-w-0 border-r border-dashed border-sand-300 relative">
-                  {/* Ticket Tear Circles */}
-                  <div className="absolute -top-3 -right-3 w-6 h-6 rounded-full bg-sand-50 border border-sand-200 z-10" />
-                  <div className="absolute -bottom-3 -right-3 w-6 h-6 rounded-full bg-sand-50 border border-sand-200 z-10" />
-
-                  <div className="relative h-44 overflow-hidden rounded-tl-sm">
-                    <img src={activity.img} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000" alt={activity.name} />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/20 to-transparent" />
-                    <div className="absolute top-3 left-3 flex gap-2">
-                       <span className="px-2 py-0.5 rounded bg-kuriftu-300 text-[8px] font-black text-kuriftu-900 uppercase tracking-widest shadow-lg">{activity.icon} {activity.duration}</span>
-                    </div>
-                    <div className="absolute bottom-3 left-3">
-                      <div className="text-[9px] font-black text-kuriftu-300 uppercase tracking-[0.2em] mb-1">{activity.loc}</div>
-                      <h3 className="text-lg font-bold text-white tracking-tight">{activity.name}</h3>
-                    </div>
-                  </div>
-
-                  <div className="flex-1 p-5 flex flex-col justify-between">
-                    <div className="space-y-4">
-                      <div className="flex items-end justify-between">
-                         <div className="text-2xl font-black text-kuriftu-800 tracking-tighter">${activity.price} <span className="text-[10px] font-bold text-sand-400 uppercase tracking-widest">/ person</span></div>
-                         <div className="text-[9px] font-bold text-kuriftu-600 bg-kuriftu-50 px-2 py-1 rounded">Heritage XP</div>
-                      </div>
-                      
-                      <p className={`text-xs text-kuriftu-900/80 leading-relaxed font-medium ${expandedCard === activity.id ? '' : 'line-clamp-3'}`}>{activity.short}</p>
-                      
-                      <div className="flex flex-wrap gap-2 pt-1">
-                         <span className="px-2 py-0.5 rounded bg-sand-100 text-[8px] font-black text-sand-600 uppercase tracking-widest">{activity.loc}</span>
-                         <span className="px-2 py-0.5 rounded bg-kuriftu-50 text-[8px] font-black text-kuriftu-700 uppercase tracking-widest">{activity.duration}</span>
-                      </div>
-                    </div>
-                    
-                    <div className="mt-auto">
-                      {expandedCard === activity.id ? (
-                        <div className="pt-3 animate-fade-in space-y-3">
-                          <div className="border-t border-sand-200 pt-3">
-                            <button onClick={(e) => { e.stopPropagation(); handleBookActivity(activity); }}
-                              className="w-full py-3 rounded-xl bg-kuriftu-700 text-white text-[10px] font-black uppercase tracking-widest hover:bg-kuriftu-800 shadow-lg shadow-kuriftu-700/20 active:scale-95 transition-all">
-                              Reserve Experience
-                            </button>
-                          </div>
-                        </div>
-                      ) : (
-                        <div className="pt-4 flex items-center justify-between text-[8px] font-black text-kuriftu-700 uppercase tracking-widest opacity-60 group-hover:opacity-100">
-                           <span>View Details</span>
-                           <span className="w-5 h-5 rounded-full bg-sand-200 flex items-center justify-center transition-all group-hover:bg-kuriftu-700 group-hover:text-white group-hover:translate-x-1">→</span>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                </div>
-
-                {/* Sidebar Stub - SLIMMER SIDEBAR */}
-                <div className="w-4 bg-kuriftu-500 h-full flex flex-col items-center justify-center py-6 relative">
-                  <div className="rotate-90 text-[7px] font-black text-white/80 uppercase tracking-[0.4em] whitespace-nowrap">
-                    SIGNATURE XP
-                  </div>
-                  <div className="absolute left-0 top-0 bottom-0 flex flex-col justify-around py-4">
-                    {[...Array(20)].map((_, i) => (
-                       <div key={i} className="w-0.5 h-0.5 rounded-full bg-kuriftu-900/10" />
-                    ))}
-                  </div>
+            <div key={activity.id} 
+              onClick={() => showNotifMsg(`${activity.name} interested!`)}
+              className="group relative h-[320px] bg-white/5 backdrop-blur-md rounded-2xl border border-white/10 overflow-hidden shadow-2xl transition-all duration-500 hover:-translate-y-2 hover:border-kuriftu-300/40 cursor-pointer"
+            >
+              {/* Card Image Section */}
+              <div className="h-44 relative overflow-hidden">
+                <img src={activity.img} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-[2s]" alt="" />
+                <div className="absolute inset-0 bg-gradient-to-t from-kuriftu-900 via-transparent to-transparent" />
+                <div className="absolute top-3 left-3 px-2 py-1 rounded-md bg-white/10 backdrop-blur-md border border-white/20 text-[8px] font-black text-white uppercase tracking-widest">
+                  {activity.icon} {activity.duration}
                 </div>
               </div>
+
+              {/* Card Content Section */}
+              <div className="p-4 flex flex-col justify-between h-[calc(320px-176px)]">
+                 <div>
+                    <div className="text-[8px] font-black text-kuriftu-300 uppercase tracking-widest mb-1">{activity.loc}</div>
+                    <h3 className="text-sm font-bold text-white leading-snug line-clamp-1">{activity.name}</h3>
+                    <p className="text-[10px] text-white/40 mt-1.5 line-clamp-2 leading-relaxed">{activity.short}</p>
+                 </div>
+                 
+                 <div className="flex items-center justify-between pt-3 border-t border-white/5">
+                    <div className="text-sm font-black text-white">${activity.price}</div>
+                    <button onClick={(e) => { e.stopPropagation(); handleBookActivity(activity); }}
+                      className="w-8 h-8 rounded-lg bg-kuriftu-300 text-kuriftu-900 flex items-center justify-center hover:bg-white transition-all shadow-lg active:scale-95">
+                       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                    </button>
+                 </div>
+              </div>
+
+              {/* Ticket Edge Detail */}
+              <div className="absolute top-1/2 -left-2 w-4 h-4 bg-[#07130c] rounded-full border border-white/5" />
+              <div className="absolute top-1/2 -right-2 w-4 h-4 bg-[#07130c] rounded-full border border-white/5" />
             </div>
           ))}
-          <div className="flex-shrink-0 w-8 md:hidden" />
         </div>
       </div>
     );
@@ -714,14 +698,15 @@ export default function UserExperienceView({ section = "user-home", userData, up
   // ─── PROFILE VIEW ─────────────────────────────────────────────────
   if (section === "user-profile") {
     return (
-      <div className="p-6 lg:p-10 animate-fade-in relative z-10">
+      <div className="min-h-screen bg-[#07130c] p-6 lg:p-10 animate-fade-in relative z-10"
+           style={{ backgroundImage: 'radial-gradient(rgba(202, 138, 4, 0.05) 0.8px, transparent 0.8px)', backgroundSize: '32px 32px' }}>
         {Toast}
         {BrandWatermark}
-        <div className="mb-12 relative overflow-hidden rounded-2xl p-10 bg-gradient-to-br from-kuriftu-green to-kuriftu-900 text-white shadow-2xl">
+        <div className="mb-12 relative overflow-hidden rounded-3xl p-10 bg-gradient-to-br from-kuriftu-green to-kuriftu-900 text-white shadow-2xl border border-kuriftu-300/20">
           <div className="absolute top-0 right-0 w-64 h-64 bg-kuriftu-300/10 rounded-full blur-[80px]" />
           <div className="relative z-10 flex flex-col md:flex-row items-center gap-10">
             <div className="relative">
-              <div className="w-32 h-32 rounded-full bg-gradient-to-br from-kuriftu-300 to-kuriftu-500 p-1 shadow-2xl overflow-hidden group">
+              <div className="w-32 h-32 rounded-full bg-gradient-to-br from-kuriftu-300 to-kuriftu-500 p-1 shadow-2xl overflow-hidden group border border-kuriftu-300/30">
                 <div className="w-full h-full rounded-full bg-kuriftu-green flex items-center justify-center text-4xl font-black text-kuriftu-300 border border-white/10 overflow-hidden">
                   {userData.img ? <img src={userData.img} className="w-full h-full object-cover" alt="Profile" /> : userData.initials}
                   <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity cursor-pointer">
@@ -759,7 +744,7 @@ export default function UserExperienceView({ section = "user-home", userData, up
                    >
                      {["Gold", "Silver", "Platinum", "Diamond"].map(t => <option key={t}>{t}</option>)}
                    </select>
-                   <button onClick={() => { setIsEditingProfile(false); showNotif("Profile updated!"); }} className="bg-white text-kuriftu-900 px-6 py-2 rounded-xl font-bold text-sm shadow-xl">Save</button>
+                   <button onClick={() => { setIsEditingProfile(false); showNotifMsg("Profile updated!"); }} className="bg-white text-kuriftu-900 px-6 py-2 rounded-xl font-bold text-sm shadow-xl">Save</button>
                  </div>
               ) : (
                 <>
@@ -768,7 +753,7 @@ export default function UserExperienceView({ section = "user-home", userData, up
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-white/40 group-hover:text-white transition-colors"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
                   </div>
                   <div className="flex flex-wrap items-center justify-center md:justify-start gap-4">
-                    <div className="flex items-center gap-2 bg-kuriftu-300 text-kuriftu-950 px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest shadow-lg shadow-kuriftu-300/20">
+                    <div className="flex items-center gap-2 bg-kuriftu-300 text-black px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest shadow-lg shadow-kuriftu-300/20">
                       <span className="w-2 h-2 rounded-full bg-kuriftu-green animate-pulse" />
                       {userData.tier} Level
                     </div>
@@ -784,16 +769,15 @@ export default function UserExperienceView({ section = "user-home", userData, up
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="lg:col-span-2 space-y-6">
-            {/* Detailed Info Card */}
-            <div className="bg-white rounded-[2rem] border border-sand-200 p-8 shadow-sm">
+            <div className="bg-black/30 backdrop-blur-md rounded-[2rem] border border-white/10 p-8 shadow-sm">
               <div className="flex items-center justify-between mb-8">
-                <h3 className="text-xl font-bold text-kuriftu-900 flex items-center gap-3">
-                  <span className="w-10 h-10 rounded-xl bg-kuriftu-50 flex items-center justify-center text-lg">📁</span>
+                <h3 className="text-xl font-bold text-white flex items-center gap-3">
+                  <span className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center text-lg">📁</span>
                   Personal Details
                 </h3>
                 <button 
                   onClick={() => setIsEditingProfile(!isEditingProfile)}
-                  className="px-5 py-2 rounded-xl bg-kuriftu-50 text-kuriftu-700 text-[10px] font-black uppercase tracking-widest hover:bg-kuriftu-100 transition-all"
+                  className="px-5 py-2 rounded-xl bg-kuriftu-300 text-kuriftu-900 text-[10px] font-black uppercase tracking-widest hover:bg-kuriftu-400 transition-all shadow-lg shadow-kuriftu-300/20"
                 >
                   {isEditingProfile ? "View Info" : "Edit Profile"}
                 </button>
@@ -808,21 +792,21 @@ export default function UserExperienceView({ section = "user-home", userData, up
                   { label: "ID / Passport", key: "passport", icon: "🆔", val: userData.passport || "P-12345678" }
                 ].map((item) => (
                   <div key={item.key} className="space-y-2">
-                    <label className="text-[10px] font-black text-sand-400 uppercase tracking-[0.2em]">{item.label}</label>
+                    <label className="text-[10px] font-black text-kuriftu-300 uppercase tracking-[0.2em]">{item.label}</label>
                     {isEditingProfile ? (
                       <div className="relative group">
-                        <span className="absolute left-3 top-1/2 -translate-y-1/2 opacity-50">{item.icon}</span>
+                        <span className="absolute left-3 top-1/2 -translate-y-1/2 opacity-50 text-white">{item.icon}</span>
                         <input 
                           type="text" 
                           value={item.val} 
                           onChange={(e) => updateUserData({ [item.key]: e.target.value })}
-                          className="w-full bg-sand-50 border border-sand-200 rounded-xl pl-10 pr-4 py-3 text-sm font-bold text-kuriftu-800 outline-none focus:ring-2 ring-kuriftu-200 focus:border-kuriftu-400 transition-all"
+                          className="w-full bg-black/40 border border-white/10 rounded-xl pl-10 pr-4 py-3 text-sm font-bold text-white outline-none focus:ring-2 ring-kuriftu-300/30 transition-all"
                         />
                       </div>
                     ) : (
-                      <div className="flex items-center gap-3 p-3 bg-sand-50/50 rounded-xl border border-transparent hover:border-sand-100 transition-all">
-                        <span className="text-lg opacity-70 group-hover:scale-110 transition-transform">{item.icon}</span>
-                        <span className="text-sm font-bold text-kuriftu-900">{item.val}</span>
+                      <div className="flex items-center gap-3 p-3 bg-white/5 rounded-xl border border-transparent hover:border-white/10 transition-all">
+                        <span className="text-lg opacity-70 text-kuriftu-300">{item.icon}</span>
+                        <span className="text-sm font-bold text-white/90">{item.val}</span>
                       </div>
                     )}
                   </div>
@@ -830,9 +814,9 @@ export default function UserExperienceView({ section = "user-home", userData, up
               </div>
             </div>
 
-            <div className="bg-white rounded-[2rem] border border-sand-200 p-8 shadow-sm">
-              <h3 className="text-xl font-bold text-kuriftu-900 mb-6 flex items-center gap-2">
-                <span className="w-8 h-8 rounded-lg bg-kuriftu-50 flex items-center justify-center">✨</span>
+            <div className="bg-black/30 backdrop-blur-md rounded-[2rem] border border-white/10 p-8 shadow-sm">
+              <h3 className="text-xl font-bold text-white mb-6 flex items-center gap-2">
+                <span className="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center">✨</span>
                 Personal Preferences
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -904,7 +888,7 @@ export default function UserExperienceView({ section = "user-home", userData, up
                     <div className="w-3/4 h-full bg-gradient-to-r from-kuriftu-400 to-yellow-300 rounded-full" />
                   </div>
                 </div>
-                <button onClick={() => showNotif("Redeeming points...")} className="w-full py-3 rounded-xl bg-white text-kuriftu-900 text-sm font-bold hover:bg-sand-50 transition-colors">Redeem Points</button>
+                <button onClick={() => showNotifMsg("Redeeming points...")} className="w-full py-3 rounded-xl bg-white text-kuriftu-900 text-sm font-bold hover:bg-sand-50 transition-colors">Redeem Points</button>
               </div>
             </div>
 
@@ -923,210 +907,193 @@ export default function UserExperienceView({ section = "user-home", userData, up
 
   // ─── HOME VIEW ────────────────────────────────────────────────────
   return (
-    <div className="p-6 lg:p-10 animate-fade-in relative z-10">
+    <div className="min-h-screen bg-[#07130c] p-6 lg:p-10 animate-fade-in relative z-10"
+         style={{ backgroundImage: 'radial-gradient(rgba(202, 138, 4, 0.05) 0.8px, transparent 0.8px)', backgroundSize: '32px 32px' }}>
       {Toast}
       {BrandWatermark}
       {showBookingModal && <BookingModal onClose={() => setShowBookingModal(false)} onConfirm={handleNewBooking} />}
       {managingBooking && <ManageBookingModal booking={managingBooking} onClose={() => setManagingBooking(null)} onCancel={handleCancelBooking} onUpdate={handleUpdateBooking} />}
 
-      {/* Hero Header */}
-      <div className="mb-12 relative overflow-hidden rounded-2xl p-10 bg-kuriftu-green text-white shadow-2xl border border-white/5">
-        {/* Decorative elements */}
-        <div className="absolute top-0 right-0 w-96 h-96 bg-kuriftu-300/10 rounded-full blur-[100px] -translate-y-1/2 translate-x-1/2" />
-        <div className="absolute bottom-0 left-0 w-64 h-64 bg-kuriftu-forest/20 rounded-full blur-[80px] translate-y-1/2 -translate-x-1/2" />
+      {/* Integrated Greeting & Weather */}
+      <div className="flex flex-col xl:flex-row justify-between items-start xl:items-end gap-10 mb-16 relative">
+        <div className="z-10">
+          <div className="flex items-center gap-3 mb-6">
+             <div className="w-16 h-16 rounded-full bg-white/5 backdrop-blur-md border border-white/10 flex items-center justify-center p-3 shadow-2xl">
+                <img src="/kuriftu-logo.png" alt="Seal" className="w-full h-full object-contain filter brightness-200" />
+             </div>
+             <div className="px-5 py-2 rounded-full bg-kuriftu-300/10 border border-kuriftu-300/20 text-[11px] font-black text-kuriftu-300 uppercase tracking-[0.25em]">
+                {userData.tier} Member Identity
+             </div>
+          </div>
+          <h1 className="text-6xl md:text-8xl font-black text-white tracking-tighter leading-[0.85] mb-6">
+            Welcome back,<br />
+            <span className="text-kuriftu-300">{userData.name.split(' ')[0]}</span>.
+          </h1>
+          <p className="text-white/40 text-lg font-medium italic max-w-xl leading-relaxed">
+            "Your heritage, redesigned. Continue your Kuriftu journey where the last chapter left off."
+          </p>
+        </div>
         
-        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-8">
-          <div className="flex flex-col md:flex-row items-center gap-8 text-center md:text-left">
-            <div className="relative">
-              <div className="w-24 h-24 rounded-full bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center p-3 shadow-2xl transform hover:scale-110 transition-transform duration-500">
-                <img src="/kuriftu-logo.png" alt="Kuriftu Seal" className="w-full h-full object-contain filter drop-shadow-xl" />
-              </div>
-              <div className="absolute -bottom-1 -right-1 w-7 h-7 rounded-full bg-kuriftu-300 border-4 border-kuriftu-green flex items-center justify-center text-kuriftu-green text-[10px] font-black shadow-lg shadow-black/20">✨</div>
-            </div>
-            
+        <div className="flex flex-col sm:flex-row gap-6 w-full xl:w-auto">
+          <div className="bg-white/5 backdrop-blur-xl border border-white/10 p-6 rounded-[2rem] flex items-center gap-6 shadow-2xl relative overflow-hidden flex-1 sm:min-w-[280px]">
+            <div className="absolute top-0 right-0 w-32 h-32 bg-kuriftu-300/5 rounded-full blur-3xl" />
+            <div className="text-5xl">☀️</div>
             <div>
-              <div className="flex flex-wrap items-center justify-center md:justify-start gap-3 mb-3">
-                <span className="px-4 py-1.5 rounded-full bg-kuriftu-300 text-kuriftu-900 text-[10px] font-black uppercase tracking-[0.25em] shadow-lg shadow-kuriftu-300/20">
-                  {userData.tier} Guest
-                </span>
-                <span className="px-4 py-1.5 rounded-full bg-white/10 backdrop-blur-sm text-white/70 text-[10px] font-bold uppercase tracking-widest border border-white/10">
-                  Resort Member
-                </span>
-              </div>
-              <h1 className="text-4xl md:text-6xl font-bold tracking-tight mb-2" style={{ fontFamily: "Georgia, serif" }}>
-                Welcome back, <span className="text-kuriftu-200">{userData.name.split(" ")[0]}</span>
-              </h1>
-              <p className="text-white text-lg font-medium italic">
-                Experience the heritage of Kuriftu luxury.
-              </p>
+              <div className="text-[10px] font-black text-kuriftu-300 uppercase tracking-widest mb-1">Stay Climate</div>
+              <div className="text-2xl font-black text-white">28°C</div>
+              <div className="text-[10px] text-white/40 font-bold uppercase tracking-wide">Bishoftu · Sunny</div>
             </div>
           </div>
-          
-          <button onClick={() => setShowBookingModal(true)}
-            className="px-10 py-5 rounded-2xl bg-kuriftu-300 hover:bg-kuriftu-400 text-kuriftu-950 font-black text-sm shadow-2xl shadow-kuriftu-300/30 transition-all flex items-center justify-center gap-3 active:scale-95 group">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" /></svg>
-            Book Your Next Stay
+
+          <button 
+            onClick={() => setShowBookingModal(true)}
+            className="group relative bg-kuriftu-300 hover:bg-white text-kuriftu-900 px-12 py-7 rounded-[2rem] font-black text-sm shadow-2xl shadow-kuriftu-300/30 active:scale-95 transition-all flex items-center justify-center gap-4 flex-1 sm:min-w-[320px] overflow-hidden"
+          >
+            <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-500" />
+            <span className="relative z-10 flex items-center gap-3">
+              BOOK YOUR NEXT STAY
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3.5" className="group-hover:translate-x-2 transition-transform duration-500"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+            </span>
           </button>
         </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
-        {/* Left main */}
-        <div className="lg:col-span-8 space-y-12">
-
-          {/* Upcoming Stay Card - Hero Mode */}
+        <div className="lg:col-span-8 space-y-16">
+          {/* Main Integrated Stay Content */}
           {upcomingBooking ? (
-            <div className="group relative bg-white rounded-[2.5rem] border border-sand-200 overflow-hidden shadow-sm hover:shadow-2xl transition-all duration-700">
-              <div className="grid grid-cols-1 md:grid-cols-12 min-h-[320px]">
-                <div className="md:col-span-5 relative overflow-hidden h-64 md:h-auto">
-                  <img src={LOCATION_RESORT_IMG[upcomingBooking.resort] || RESORT_IMAGES.bishoftu}
-                    className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-[2s]" alt={upcomingBooking.resort} />
-                  <div className="absolute inset-0 bg-gradient-to-r from-kuriftu-900/60 via-kuriftu-900/20 to-transparent" />
+            <div className="relative group">
+              <div className="flex items-center gap-4 mb-8">
+                <div className="w-1.5 bg-kuriftu-300 h-10 rounded-full shadow-lg" />
+                <h2 className="text-3xl font-black text-white tracking-tighter uppercase italic">Your active chapter</h2>
+              </div>
+              
+              <div className="relative bg-white/5 backdrop-blur-md rounded-[3rem] border border-white/10 overflow-hidden shadow-2xl transition-all duration-700 hover:shadow-kuriftu-300/10">
+                <div className="grid grid-cols-1 md:grid-cols-12 min-h-[420px]">
+                  <div className="md:col-span-6 relative overflow-hidden h-72 md:h-auto">
+                    <img src={LOCATION_RESORT_IMG[upcomingBooking.resort] || RESORT_IMAGES.bishoftu}
+                      className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-[4s]" alt={upcomingBooking.resort} />
+                    <div className="absolute inset-0 bg-gradient-to-r from-kuriftu-900/60 via-transparent to-transparent" />
+                    <div className="absolute top-8 left-8">
+                       <StatusBadge status={upcomingBooking.status} />
+                    </div>
+                  </div>
                   
-                  <div className="absolute top-6 left-6">
-                    <div className="px-3 py-1 rounded-full bg-white/20 backdrop-blur-md border border-white/20 text-[10px] font-black text-white uppercase tracking-widest">
-                      Live Reservation
-                    </div>
-                  </div>
-
-                  <div className="absolute bottom-6 left-6 text-white">
-                    <div className="text-[10px] font-bold uppercase tracking-[0.2em] opacity-80 mb-1">Current Destination</div>
-                    <div className="text-3xl font-bold tracking-tight">{upcomingBooking.resort}</div>
-                  </div>
-                </div>
-                
-                <div className="md:col-span-7 p-10 flex flex-col justify-between relative">
-                  {/* Glass accent */}
-                  <div className="absolute top-0 right-0 w-32 h-32 bg-kuriftu-50 rounded-full blur-3xl opacity-40 -z-10" />
-                  
-                  <div className="flex justify-between items-start mb-8">
-                    <div>
-                      <div className="text-xs font-black text-kuriftu-600 uppercase tracking-[0.2em] mb-2">Upcoming Stay</div>
-                      <h2 className="text-2xl font-bold text-kuriftu-900 leading-tight">{upcomingBooking.room}</h2>
-                    </div>
-                    <div className="text-center px-6 py-3 bg-kuriftu-50 rounded-[2rem] border border-kuriftu-100 shadow-inner">
-                      <div className="text-3xl font-black text-kuriftu-800 tracking-tighter">{nightsBetween(new Date().toISOString().split("T")[0], upcomingBooking.checkIn)}</div>
-                      <div className="text-[9px] font-black text-kuriftu-400 uppercase tracking-widest">Days Away</div>
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-8 mb-10">
-                    <div className="flex items-center gap-4">
-                      <div className="w-14 h-14 rounded-2xl bg-sand-50 border border-sand-100 flex items-center justify-center text-2xl shadow-sm">📅</div>
+                  <div className="md:col-span-6 p-6 md:p-12 flex flex-col justify-between relative bg-[#0a1b12]/60 backdrop-blur-xl">
+                      <div className="absolute top-0 right-0 w-64 h-64 bg-kuriftu-300/5 rounded-full blur-[100px]" />
+                      
                       <div>
-                        <div className="text-[10px] font-bold text-sand-400 uppercase tracking-widest mb-1">Check-in</div>
-                        <div className="text-base font-black text-kuriftu-800">{formatDate(upcomingBooking.checkIn)}</div>
+                        <div className="text-[11px] font-black text-kuriftu-300 uppercase tracking-[0.3em] mb-3">Currently Reserved</div>
+                        <h3 className="text-3xl md:text-4xl font-bold text-white mb-2 tracking-tight leading-none">{upcomingBooking.resort}</h3>
+                        <div className="text-base md:text-lg font-bold text-white/50 italic mb-8">{upcomingBooking.room}</div>
+                        
+                        <div className="grid grid-cols-2 gap-4 md:gap-8 mb-10">
+                          <div>
+                            <div className="text-[9px] font-black text-white/30 uppercase tracking-[0.2em] mb-2">Check-in</div>
+                            <div className="text-base font-black text-white">{formatDate(upcomingBooking.checkIn)}</div>
+                          </div>
+                          <div>
+                            <div className="text-[9px] font-black text-white/30 uppercase tracking-[0.2em] mb-2">Stay Length</div>
+                            <div className="text-base font-black text-kuriftu-300">{nightsBetween(upcomingBooking.checkIn, upcomingBooking.checkOut)} Nights</div>
+                          </div>
+                        </div>
                       </div>
-                    </div>
-                    <div className="flex items-center gap-4">
-                      <div className="w-14 h-14 rounded-2xl bg-sand-50 border border-sand-100 flex items-center justify-center text-2xl shadow-sm">🚪</div>
-                      <div>
-                        <div className="text-[10px] font-bold text-sand-400 uppercase tracking-widest mb-1">Check-out</div>
-                        <div className="text-base font-black text-kuriftu-800">{formatDate(upcomingBooking.checkOut)}</div>
-                      </div>
-                    </div>
-                  </div>
 
-                  <div className="flex items-center justify-between pt-6 border-t border-sand-100">
-                    <div className="flex items-center gap-3">
-                      <StatusBadge status={upcomingBooking.status} />
-                      <div className="text-xs font-bold text-kuriftu-700 uppercase tracking-widest">Confirmed</div>
-                    </div>
-                    <button onClick={() => setManagingBooking(upcomingBooking)}
-                      className="px-8 py-4 rounded-xl bg-kuriftu-900 text-white text-sm font-black hover:bg-kuriftu-800 transition-all shadow-xl active:scale-95 group flex items-center gap-2">
-                      Manage Booking
-                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="group-hover:translate-x-1 transition-transform"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-                    </button>
+                      <button onClick={() => setManagingBooking(upcomingBooking)}
+                        className="w-full py-5 rounded-2xl bg-white/5 border border-white/10 text-white font-black text-xs uppercase tracking-widest hover:bg-white hover:text-kuriftu-900 transition-all shadow-xl active:scale-95">
+                        Manage Your Stay
+                      </button>
                   </div>
                 </div>
               </div>
             </div>
           ) : (
-            <div className="bg-white rounded-2xl border border-sand-200 p-10 text-center shadow-sm">
-              <div className="text-5xl mb-4">🏨</div>
-              <div className="text-xl font-bold text-kuriftu-700 mb-2">No upcoming stays</div>
-              <p className="text-sand-500 text-sm mb-5">Ready for your next Kuriftu escape?</p>
-              <button onClick={() => setShowBookingModal(true)}
-                className="px-7 py-3 rounded-xl bg-kuriftu-700 text-white font-bold text-sm hover:bg-kuriftu-800 transition-all shadow-md active:scale-95">
-                Book Now
-              </button>
+            <div className="bg-white/5 backdrop-blur-md rounded-[2rem] md:rounded-[3rem] border border-white/10 p-8 md:p-16 text-center shadow-2xl relative overflow-hidden group">
+               <div className="absolute inset-0 bg-gradient-to-br from-kuriftu-300/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+               <div className="text-5xl md:text-7xl mb-6 md:mb-8 transform group-hover:scale-110 transition-transform">🌅</div>
+               <h3 className="text-2xl md:text-3xl font-black text-white mb-4 tracking-tighter">No Active Reservations</h3>
+               <p className="text-white/40 text-base md:text-lg mb-8 md:mb-10 max-w-sm mx-auto font-medium">Your next Kuriftu experience is waiting to be written.</p>
+               <button onClick={() => setShowBookingModal(true)}
+                 className="w-full sm:w-auto px-12 py-5 rounded-3xl bg-kuriftu-300 text-kuriftu-900 font-black text-sm hover:bg-white transition-all shadow-2xl active:scale-95">
+                 BEGIN NEW JOURNEY
+               </button>
             </div>
           )}
 
-          {/* Recommended Activities */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-            <div className="md:col-span-2 bg-white rounded-2xl border border-sand-200 p-8 shadow-sm">
-              <div className="flex items-center justify-between mb-6">
-                <h3 className="text-xl font-bold text-kuriftu-900 flex items-center gap-2"><span className="w-8 h-8 rounded-lg bg-kuriftu-50 flex items-center justify-center">✨</span>Recommended</h3>
-                <button className="text-[10px] font-bold text-kuriftu-600 uppercase tracking-widest hover:text-kuriftu-800 transition-colors">See All →</button>
-              </div>
-              <div className="space-y-3">
-                {ACTIVITIES.slice(0, 3).map(activity => (
-                  <div key={activity.id} className="group flex items-center gap-4 p-3 rounded-[1.5rem] hover:bg-sand-50 border border-transparent hover:border-sand-100 transition-all cursor-pointer"
-                    onClick={() => showNotif(`${activity.name} added to wishlist!`)}>
-                    <div className="w-14 h-14 rounded-2xl overflow-hidden flex-shrink-0">
-                      <img src={activity.img} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" alt={activity.name} />
+          {/* Personalized Recommender - The "Discovery Grid" */}
+          <div className="relative">
+             <div className="flex items-center justify-between mb-8">
+                <div className="flex items-center gap-4">
+                  <div className="w-1 bg-white/20 h-8 rounded-full" />
+                  <h2 className="text-xl font-bold text-white tracking-tight">Curation for your mood</h2>
+                </div>
+                <div className="flex gap-2">
+                   {["Relax", "Active", "Social"].map(m => (
+                     <button key={m} className={`px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest transition-all ${m === 'Relax' ? 'bg-kuriftu-300 text-kuriftu-900 shadow-lg' : 'bg-white/5 text-white/40 hover:bg-white/10'}`}>
+                       {m}
+                     </button>
+                   ))}
+                </div>
+             </div>
+
+             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {ACTIVITIES.slice(0, 2).map(activity => (
+                  <div key={activity.id} className="group relative h-64 rounded-3xl overflow-hidden border border-white/10 shadow-2xl hover:border-kuriftu-300/40 transition-all cursor-pointer">
+                    <img src={activity.img} className="absolute inset-0 w-full h-full object-cover grayscale-[0.2] group-hover:grayscale-0 group-hover:scale-110 transition-all duration-[1s]" alt="" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-kuriftu-900 via-kuriftu-900/40 to-transparent" />
+                    
+                    <div className="absolute bottom-6 left-6 right-6">
+                       <div className="text-[9px] font-black text-kuriftu-300 uppercase tracking-widest mb-1">{activity.loc}</div>
+                       <h3 className="text-xl font-bold text-white mb-3">{activity.name}</h3>
+                       <button className="px-5 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-[10px] font-black text-white uppercase tracking-widest group-hover:bg-kuriftu-300 group-hover:text-kuriftu-900 transition-all">
+                          Experience Now
+                       </button>
                     </div>
-                    <div className="flex-1 min-w-0">
-                      <div className="text-sm font-bold text-kuriftu-900 truncate">{activity.name}</div>
-                      <div className="text-xs text-sand-500">{activity.loc} · 2 hrs</div>
-                    </div>
-                    <div className="w-9 h-9 rounded-full bg-white border border-sand-100 flex items-center justify-center text-kuriftu-400 group-hover:bg-kuriftu-700 group-hover:text-white transition-all shadow-sm">›</div>
                   </div>
                 ))}
-              </div>
-            </div>
-
-            <div 
-              onClick={() => expandedCard === 'concierge' ? setExpandedCard(null) : setExpandedCard('concierge')}
-              className={`bg-gradient-to-br from-kuriftu-green to-[#071a0f] rounded-2xl p-8 text-white shadow-2xl flex flex-col relative overflow-hidden border border-white/5 cursor-pointer transition-all duration-500 ${expandedCard === 'concierge' ? 'lg:scale-105 ring-2 ring-kuriftu-300' : ''}`}
-            >
-              <div className="absolute top-0 right-0 w-48 h-48 bg-kuriftu-300/10 rounded-full blur-3xl pointer-events-none" />
-              <div className="absolute -bottom-10 -left-10 w-48 h-48 bg-kuriftu-forest/10 rounded-full blur-3xl pointer-events-none" />
-              
-              <div className="relative z-10 flex-1">
-                <div className="flex items-center gap-3 mb-6">
-                  <div className="w-12 h-12 rounded-full bg-white/10 backdrop-blur-md flex items-center justify-center border border-white/10 p-2 shadow-inner">
-                    <img src="/kuriftu-logo.png" alt="Seal" className="w-full h-full object-contain" />
-                  </div>
-                  <div>
-                    <div className="text-[10px] font-black text-kuriftu-300 uppercase tracking-[0.2em]">Guest Assistant</div>
-                    <div className="text-base font-bold text-white">Digital Concierge</div>
-                  </div>
-                </div>
-                
-                <h4 className="text-xl font-bold mb-4 leading-snug">Personal Guest Planning</h4>
-                <p className={`text-sm text-white/60 leading-relaxed font-medium italic ${expandedCard === 'concierge' ? '' : 'mb-8'}`}>"Welcome to Kuriftu. How may I assist you with your stay today?"</p>
-                
-                {expandedCard === 'concierge' && (
-                  <div className="mt-4 pt-4 border-t border-white/10 animate-fade-in mb-8">
-                    <div className="space-y-3">
-                      <div className="flex items-center gap-3 text-xs text-white/80 bg-white/5 p-3 rounded-xl border border-white/5">
-                        <span className="text-lg">🛎️</span> Room service & Extra towels
-                      </div>
-                      <div className="flex items-center gap-3 text-xs text-white/80 bg-white/5 p-3 rounded-xl border border-white/5">
-                        <span className="text-lg">🍽️</span> Restaurant reservations
-                      </div>
-                    </div>
-                  </div>
-                )}
-              </div>
-              
-              <button onClick={(e) => { e.stopPropagation(); showNotif("Connecting to Concierge...") }}
-                className="w-full py-4 rounded-xl bg-kuriftu-300 text-kuriftu-950 text-sm font-black hover:bg-kuriftu-400 transition-all flex items-center justify-center gap-2 shadow-xl shadow-black/40">
-                Contact Concierge
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" /></svg>
-              </button>
-            </div>
+             </div>
           </div>
         </div>
 
         {/* Right sidebar */}
-        <div className="lg:col-span-4 space-y-6">
+        <div className="lg:col-span-4 flex flex-col gap-8">
+          {/* Heritage Concierge - Now in sidebar to fit the "Right side part" */}
+          <div className="flex-1 bg-gradient-to-br from-kuriftu-green to-[#041108] rounded-[2rem] md:rounded-[2.5rem] p-6 md:p-10 border border-white/10 relative overflow-hidden shadow-2xl flex flex-col justify-between">
+             <div className="absolute top-0 right-0 w-64 h-64 bg-kuriftu-300/5 rounded-full blur-[80px]" />
+             <div className="relative z-10">
+                <div className="flex items-center gap-4 mb-8">
+                   <div className="w-12 h-12 md:w-14 md:h-14 rounded-2xl bg-white/5 flex items-center justify-center p-3 shadow-inner">
+                     <img src="/kuriftu-logo.png" alt="" className="w-full h-full object-contain filter brightness-200" />
+                   </div>
+                   <div>
+                     <div className="text-[10px] font-black text-kuriftu-300 uppercase tracking-widest mb-1">Heritage Concierge</div>
+                     <div className="text-lg md:text-xl font-bold text-white tracking-tight leading-tight">How can I assist?</div>
+                   </div>
+                </div>
+                
+                <p className="text-white/60 text-sm leading-relaxed mb-8 md:mb-10 italic">"Request services, book experiences, or get expert local tips instantly through our digital hub."</p>
+                
+                <div className="space-y-3 md:space-y-4 mb-8 md:mb-10">
+                   {["Order Breakfast Buffet", "Book Private Spa", "Request Valet Parking", "In-room Dining Menu"].map(q => (
+                     <button key={q} onClick={() => showNotifMsg(`${q} request sent!`)}
+                       className="w-full px-4 md:px-5 py-3.5 md:py-4 rounded-xl bg-white/5 border border-white/10 text-[11px] md:text-xs font-bold text-white text-left hover:bg-white hover:text-kuriftu-900 transition-all flex items-center justify-between group">
+                       {q}
+                       <span className="opacity-0 group-hover:opacity-100 transition-opacity">→</span>
+                     </button>
+                   ))}
+                </div>
+             </div>
+             
+             <button onClick={() => showNotifMsg("Opening Voice Concierge...")}
+               className="w-full px-8 py-5 rounded-2xl bg-kuriftu-300 text-kuriftu-900 font-black text-sm hover:bg-white transition-all shadow-2xl flex items-center justify-center gap-3 active:scale-95 z-10">
+                OPEN CONCIERGE HUB
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" /></svg>
+             </button>
+          </div>
           {/* Loyalty / Membership Content */}
           <div 
             onClick={() => expandedCard === 'rewards' ? setExpandedCard(null) : setExpandedCard('rewards')}
-            className={`bg-gradient-to-br from-kuriftu-green to-kuriftu-900 rounded-2xl p-10 text-white shadow-2xl relative overflow-hidden border border-white/5 cursor-pointer transition-all duration-500 ${expandedCard === 'rewards' ? 'lg:scale-105 ring-2 ring-kuriftu-300' : ''}`}
+            className={`bg-gradient-to-br from-kuriftu-green to-kuriftu-900 rounded-[2rem] p-6 md:p-10 text-white shadow-2xl relative overflow-hidden border border-white/5 cursor-pointer transition-all duration-500 ${expandedCard === 'rewards' ? 'lg:scale-105 ring-2 ring-kuriftu-300' : ''}`}
           >
             {/* Background Logo Watermark */}
             <div className="absolute -bottom-10 -right-10 w-64 h-64 opacity-[0.05] pointer-events-none">
@@ -1136,17 +1103,17 @@ export default function UserExperienceView({ section = "user-home", userData, up
             <div className="relative z-10">
               <div className="flex justify-between items-start mb-10">
                 <div className="flex items-center gap-4">
-                  <div className="w-14 h-14 rounded-full bg-gradient-to-br from-kuriftu-300 to-kuriftu-500 flex items-center justify-center text-3xl shadow-xl shadow-kuriftu-500/20 p-2">
+                  <div className="w-12 h-12 md:w-14 md:h-14 rounded-full bg-gradient-to-br from-kuriftu-300 to-kuriftu-500 flex items-center justify-center text-3xl shadow-xl shadow-kuriftu-500/20 p-2">
                     <img src="/kuriftu-logo.png" alt="Seal" className="w-full h-full object-contain" />
                   </div>
                   <div>
                     <div className="text-[10px] font-black text-kuriftu-300 uppercase tracking-[0.3em] mb-1">Kuriftu Rewards</div>
-                    <div className="text-2xl font-black">{userData.tier} Level</div>
+                    <div className="text-xl md:text-2xl font-black">{userData.tier} Level</div>
                   </div>
                 </div>
-                <div className="bg-white/10 backdrop-blur-md px-4 py-2 rounded-2xl border border-white/10">
-                  <div className="text-[10px] font-bold opacity-50 uppercase tracking-widest mb-0.5">Stays</div>
-                  <div className="text-xl font-black text-kuriftu-300">4,820</div>
+                <div className="bg-white/10 backdrop-blur-md px-3 md:px-4 py-1.5 md:py-2 rounded-2xl border border-white/10">
+                  <div className="text-[10px] font-bold opacity-50 uppercase tracking-widest mb-0.5">Points</div>
+                  <div className="text-lg md:text-xl font-black text-kuriftu-300">4,820</div>
                 </div>
               </div>
 
@@ -1175,12 +1142,12 @@ export default function UserExperienceView({ section = "user-home", userData, up
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
-                <button onClick={(e) => { e.stopPropagation(); showNotif("Checking perk availability...") }}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-4">
+                <button onClick={(e) => { e.stopPropagation(); showNotifMsg("Checking perk availability...") }}
                   className="py-4 rounded-xl bg-kuriftu-300 text-kuriftu-900 text-sm font-black hover:bg-kuriftu-200 transition-all shadow-xl active:scale-95">
                   View Perks
                 </button>
-                <button onClick={(e) => { e.stopPropagation(); showNotif("Showing membership benefits...") }}
+                <button onClick={(e) => { e.stopPropagation(); showNotifMsg("Showing membership benefits...") }}
                   className="py-4 rounded-xl bg-white/10 text-white text-sm font-bold hover:bg-white/20 transition-all border border-white/10">
                   Membership
                 </button>
@@ -1188,39 +1155,38 @@ export default function UserExperienceView({ section = "user-home", userData, up
             </div>
           </div>
 
-          {/* Quick stats */}
-          <div className="grid grid-cols-2 gap-4">
-            <div className="bg-white rounded-[1.5rem] p-5 border border-sand-200 text-center shadow-sm">
-              <div className="text-3xl mb-2">🗺️</div>
-              <div className="text-lg font-bold text-kuriftu-900">{bookings.filter(b => b.status === "completed").length + 1}</div>
-              <div className="text-[10px] text-sand-500 font-bold uppercase">Resorts Visited</div>
-            </div>
-            <div className="bg-kuriftu-50 rounded-[1.5rem] p-5 border border-kuriftu-100 text-center shadow-sm">
-              <div className="text-3xl mb-2">🌙</div>
-              <div className="text-lg font-bold text-kuriftu-900">{bookings.reduce((s, b) => s + nightsBetween(b.checkIn, b.checkOut), 0)}</div>
-              <div className="text-[10px] text-kuriftu-600 font-bold uppercase">Total Nights</div>
-            </div>
-          </div>
-
-          {/* Recent bookings list */}
-          <div className="bg-white rounded-[2rem] border border-sand-200 p-6 shadow-sm">
+          {/* Quick stats and Recent */}
+          <div className="bg-black/30 backdrop-blur-md rounded-[2rem] border border-white/10 p-6 shadow-xl mb-6">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-sm font-bold text-kuriftu-900">Recent Bookings</h3>
-              <button className="text-[10px] font-bold text-kuriftu-600 uppercase tracking-wide hover:text-kuriftu-800">See All →</button>
+              <h3 className="text-sm font-bold text-white">Recent Activity</h3>
+              <button className="text-[10px] font-bold text-kuriftu-300 uppercase tracking-wide hover:text-white transition-colors">History →</button>
             </div>
             <div className="space-y-3">
-              {bookings.slice(0, 3).map(b => (
-                <div key={b.id} onClick={() => setManagingBooking(b)} className="flex items-center gap-3 p-2 rounded-xl hover:bg-sand-50 cursor-pointer transition-colors group">
+              {bookings.slice(0, 7).map(b => (
+                <div key={b.id} onClick={() => setManagingBooking(b)} className="flex items-center gap-3 p-2 rounded-xl hover:bg-white/5 cursor-pointer transition-colors group">
                   <div className="w-10 h-10 rounded-xl overflow-hidden flex-shrink-0">
                     <img src={LOCATION_RESORT_IMG[b.resort] || RESORT_IMAGES.bishoftu} className="w-full h-full object-cover" alt={b.resort} />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <div className="text-xs font-bold text-kuriftu-900 truncate">{b.resort}</div>
-                    <div className="text-[10px] text-sand-400">{formatDate(b.checkIn)}</div>
+                    <div className="text-xs font-bold text-white truncate">{b.resort}</div>
+                    <div className="text-[10px] text-white/40">{formatDate(b.checkIn)}</div>
                   </div>
                   <StatusBadge status={b.status} />
                 </div>
               ))}
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div className="bg-black/40 backdrop-blur-md rounded-[1.5rem] p-5 border border-white/10 text-center shadow-xl">
+              <div className="text-3xl mb-2">🗺️</div>
+              <div className="text-lg font-bold text-white">{bookings.filter(b => b.status === "completed").length + 2}</div>
+              <div className="text-[10px] text-kuriftu-300 font-bold uppercase">Resorts Visited</div>
+            </div>
+            <div className="bg-white/5 backdrop-blur-md rounded-[1.5rem] p-5 border border-white/10 text-center shadow-xl">
+              <div className="text-3xl mb-2">🌙</div>
+              <div className="text-lg font-bold text-white">{bookings.reduce((s, b) => s + nightsBetween(b.checkIn, b.checkOut), 0)}</div>
+              <div className="text-[10px] text-kuriftu-300 font-bold uppercase">Total Nights</div>
             </div>
           </div>
         </div>
@@ -1235,7 +1201,7 @@ function BookingCard({ booking, onManage, past }) {
   return (
     <div 
       onClick={() => setExpanded(!expanded)}
-      className={`relative w-[320px] h-[400px] bg-[#fdfbf7] rounded-sm shadow-xl flex overflow-hidden group cursor-pointer transition-all duration-500 transform hover:-translate-y-2 border border-sand-200/50 ${past ? "grayscale-[0.4] opacity-80" : ""} ${expanded ? 'scale-[1.02] z-50 shadow-2xl ring-4 ring-kuriftu-300/20' : ''}`}
+      className={`relative w-full max-w-[320px] h-[400px] bg-[#fdfbf7] rounded-sm shadow-xl flex overflow-hidden group cursor-pointer transition-all duration-500 transform hover:-translate-y-2 border border-sand-200/50 ${past ? "grayscale-[0.4] opacity-80" : ""} ${expanded ? 'scale-[1.02] z-50 shadow-2xl ring-4 ring-kuriftu-300/20' : ''}`}
       style={{
         boxShadow: "0 10px 40px -10px rgba(0,0,0,0.2), inset 0 0 40px rgba(0,0,0,0.02)",
         backgroundImage: "radial-gradient(#f0eada 0.5px, transparent 0.5px)",

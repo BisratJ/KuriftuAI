@@ -78,36 +78,41 @@ export default function DashboardView() {
   };
 
   return (
-    <div className="p-6 lg:p-8 max-w-[1200px] mx-auto">
-      <div className="flex items-center justify-between mb-7">
+    <div className="p-4 md:p-8 lg:p-12 animate-fade-in relative z-10 overflow-x-hidden">
+      <div className="flex flex-col xl:flex-row xl:items-center justify-between gap-6 mb-12">
         <div>
-          <h1 className="text-[22px] font-semibold text-kuriftu-900 tracking-tight">Dashboard</h1>
-          <p className="text-sm text-sand-500 mt-1">Overview across all Kuriftu locations</p>
+          <h1 className="text-4xl font-black text-white tracking-tight" style={{ fontFamily: "Georgia, serif" }}>Operations Intelligence</h1>
+          <p className="text-kuriftu-300 font-bold text-sm mt-2 uppercase tracking-[0.2em]">Real-time Performance Overview</p>
         </div>
-        <div className="flex items-center gap-2">
-          <select
-            value={selectedProperty}
-            onChange={(e) => setSelectedProperty(e.target.value)}
-            className="px-3 py-2 rounded-lg border border-sand-200 bg-white text-sm text-kuriftu-900 font-medium focus:border-kuriftu-500 cursor-pointer"
-          >
-            <option value="all">All Properties</option>
-            {LOCATIONS.map((loc) => (
-              <option key={loc.id} value={loc.id}>{loc.name}</option>
-            ))}
-          </select>
+        <div className="flex flex-wrap items-center gap-4">
+          <div className="relative group">
+            <select
+              value={selectedProperty}
+              onChange={(e) => setSelectedProperty(e.target.value)}
+              className="appearance-none pl-5 pr-12 py-3.5 rounded-2xl border border-white/10 bg-black/40 text-sm text-white font-bold outline-none focus:ring-4 ring-kuriftu-300/20 cursor-pointer min-w-[200px] transition-all"
+            >
+              <option value="all">All Properties</option>
+              {LOCATIONS.map((loc) => (
+                <option key={loc.id} value={loc.id} className="bg-kuriftu-900">{loc.name}</option>
+              ))}
+            </select>
+            <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-kuriftu-300">
+               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><polyline points="6 9 12 15 18 9"/></svg>
+            </div>
+          </div>
           <button
             onClick={handleRefresh}
             disabled={isRefreshing}
-            className="p-2 rounded-lg border border-sand-200 bg-white text-sand-500 hover:bg-sand-50 hover:text-kuriftu-700 transition-colors disabled:opacity-50"
+            className="w-12 h-12 flex items-center justify-center rounded-2xl border border-white/10 bg-white/5 text-kuriftu-300 hover:bg-kuriftu-300 hover:text-kuriftu-950 transition-all disabled:opacity-50 shadow-lg active:scale-95"
             title="Refresh data"
           >
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={isRefreshing ? "animate-spin" : ""}>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className={isRefreshing ? "animate-spin" : ""}>
               <polyline points="23 4 23 10 17 10" /><polyline points="1 20 1 14 7 14" /><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15" />
             </svg>
           </button>
-          <div className="px-3 py-2 rounded-lg bg-green-50 border border-green-200 text-green-700 text-xs font-semibold flex items-center gap-1.5">
-            <div className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
-            Live
+          <div className="px-5 py-3 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-black uppercase tracking-widest flex items-center gap-2 shadow-xl shadow-emerald-500/5">
+            <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+            Live Feed
           </div>
         </div>
       </div>
@@ -120,30 +125,33 @@ export default function DashboardView() {
       </div>
 
       {/* AI Action Feed */}
-      <div className="bg-white border border-sand-200 rounded-lg p-5 mb-6">
-        <div className="flex items-center gap-2 mb-3">
-          <span className="text-kuriftu-500">{Icons.sparkle}</span>
-          <span className="text-sm font-semibold text-kuriftu-900">AI Action Feed</span>
-          <span className="text-[10px] text-sand-400 ml-2">{lastRefresh.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}</span>
-          <span className="text-[10px] font-bold text-sand-400 uppercase tracking-wider ml-auto">{alerts.length} alerts</span>
+      <div className="bg-black/20 backdrop-blur-md border border-white/10 rounded-3xl p-5 md:p-8 mb-8 shadow-2xl relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-64 h-64 bg-kuriftu-300/5 rounded-full blur-[80px]" />
+        <div className="flex flex-col sm:flex-row sm:items-center gap-3 mb-6 relative z-10">
+          <div className="flex items-center gap-3">
+            <span className="text-kuriftu-300 w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center p-1.5">{Icons.sparkle}</span>
+            <span className="text-base font-bold text-white">AI Intelligence Stream</span>
+          </div>
+          <span className="text-[10px] text-kuriftu-300/40 font-black uppercase tracking-widest sm:ml-4">{lastRefresh.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}</span>
+          <div className="sm:ml-auto px-4 py-1.5 rounded-full bg-white/5 border border-white/10 text-[10px] font-black text-kuriftu-300 uppercase tracking-widest text-center self-start sm:self-auto">{alerts.length} Pending Actions</div>
         </div>
         {alerts.length === 0 ? (
-          <div className="text-center py-6 text-sand-400 text-sm">All caught up — no new alerts</div>
+          <div className="text-center py-12 text-white/20 font-bold italic tracking-wide">All operational systems clear — no pending alerts</div>
         ) : (
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-2">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 relative z-10">
             {alerts.map((alert) => (
-              <div key={alert.id} className={`flex items-start gap-3 p-3 rounded-lg border transition-all animate-slide-up ${alert.bg} ${alert.border} group`}>
-                <div className={`mt-0.5 flex-shrink-0 ${alert.color}`}>{Icons.zap}</div>
+              <div key={alert.id} className="flex items-start gap-4 p-5 rounded-2xl bg-white/5 border border-white/5 hover:border-kuriftu-300/30 hover:bg-white/10 transition-all group animate-slide-up shadow-lg">
+                <div className="mt-1 flex-shrink-0 text-kuriftu-300 bg-kuriftu-300/10 p-2 rounded-xl scale-90">{Icons.zap}</div>
                 <div className="flex-1 min-w-0">
-                  <p className={`text-[12px] font-medium ${alert.color} leading-relaxed`}>{alert.message}</p>
-                  <span className="text-[10px] text-sand-400 mt-1 block">{alert.time}</span>
+                  <p className="text-[13px] font-bold text-white/90 leading-relaxed truncate-3-lines">{alert.message}</p>
+                  <span className="text-[10px] font-black text-kuriftu-300/40 uppercase tracking-widest mt-2 block">{alert.time}</span>
                 </div>
                 <button
                   onClick={() => dismissAlert(alert.id)}
-                  className="flex-shrink-0 opacity-0 group-hover:opacity-100 transition-opacity text-sand-400 hover:text-sand-600 p-0.5"
-                  title="Dismiss"
+                  className="flex-shrink-0 opacity-0 group-hover:opacity-100 transition-opacity text-white/20 hover:text-white p-2"
+                  title="Archive"
                 >
-                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
                 </button>
               </div>
             ))}
@@ -153,90 +161,119 @@ export default function DashboardView() {
 
       {/* AI Insights Panel */}
       {config.features.aiDashboardInsights && (
-        <div className="bg-gradient-to-r from-kuriftu-50 to-sand-50 border border-kuriftu-200 rounded-lg p-5 mb-6">
-          <div className="flex items-center justify-between mb-3">
-            <div className="flex items-center gap-2">
-              <span className="text-kuriftu-500">{Icons.sparkle}</span>
-              <span className="text-sm font-semibold text-kuriftu-900">AI Business Insights</span>
+        <div className="bg-gradient-to-br from-kuriftu-green to-[#051109] border border-kuriftu-300/20 rounded-3xl p-5 md:p-8 mb-8 shadow-2xl relative overflow-hidden">
+          <div className="absolute -bottom-10 -left-10 w-96 h-96 bg-kuriftu-300/5 rounded-full blur-[100px] pointer-events-none" />
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8 relative z-10">
+            <div className="flex items-center gap-3">
+              <span className="text-kuriftu-300 w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center p-2.5 shadow-inner flex-shrink-0">{Icons.sparkle}</span>
+              <div>
+                <span className="text-lg font-bold text-white block">Executive AI Insights</span>
+                <span className="text-[10px] font-black text-kuriftu-300 uppercase tracking-widest">Deep Business Analysis</span>
+              </div>
             </div>
             <button
               onClick={fetchInsight}
               disabled={insightLoading}
-              className="px-3 py-1.5 rounded-lg bg-kuriftu-700 text-white text-xs font-semibold hover:bg-kuriftu-800 transition-colors disabled:opacity-50 flex items-center gap-1.5"
+              className="px-8 py-3.5 rounded-2xl bg-kuriftu-300 text-kuriftu-900 text-sm font-black hover:bg-kuriftu-200 transition-all disabled:opacity-50 flex items-center gap-3 shadow-xl shadow-kuriftu-300/20 active:scale-95"
             >
               {insightLoading ? (
-                <><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="animate-spin"><circle cx="12" cy="12" r="10" strokeDasharray="30 10"/></svg> Analyzing...</>
+                <><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" className="animate-spin"><circle cx="12" cy="12" r="10" strokeDasharray="30 10"/></svg> Processing...</>
               ) : (
-                <>{Icons.sparkle} Generate Insights</>
+                <>Analyze Performance →</>
               )}
             </button>
           </div>
           {aiInsight ? (
-            <div className="text-[13px] text-kuriftu-900 leading-relaxed whitespace-pre-line bg-white/60 rounded-lg p-4 border border-kuriftu-100">{aiInsight}</div>
+            <div className="text-[14px] text-white/90 leading-relaxed whitespace-pre-line bg-black/40 backdrop-blur-md rounded-2xl p-6 border border-white/5 relative z-10 font-medium italic shadow-inner">
+               "{aiInsight}"
+            </div>
           ) : (
-            <div className="text-[12px] text-sand-500 italic">Click &ldquo;Generate Insights&rdquo; to get AI-powered analysis of your operational data.</div>
+            <div className="text-[13px] text-kuriftu-300/60 font-medium italic relative z-10 bg-black/10 p-6 rounded-2xl border border-dashed border-white/10 text-center">
+              Request a comprehensive AI analysis of your multi-resort performance data.
+            </div>
           )}
         </div>
       )}
 
-      <div className="grid grid-cols-1 lg:grid-cols-[2fr_1fr] gap-4 mb-6">
-        <div className="bg-white border border-sand-200 rounded-lg p-5">
-          <div className="text-sm font-semibold text-kuriftu-900 mb-4">Revenue by Service</div>
-          <ResponsiveContainer width="100%" height={240}>
-            <BarChart data={REVENUE_DATA} barSize={12} barGap={2}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#f0ebe4" vertical={false} />
-              <XAxis dataKey="month" tick={{ fontSize: 12, fill: "#8c7e6f" }} axisLine={false} tickLine={false} />
-              <YAxis tick={{ fontSize: 12, fill: "#8c7e6f" }} axisLine={false} tickLine={false} tickFormatter={(v) => `$${v}`} />
-              <Tooltip contentStyle={{ fontSize: "12px", borderRadius: "6px", border: "1px solid #e7e0d8" }} />
-              <Bar dataKey="rooms" fill="#92400e" radius={[3, 3, 0, 0]} name="Rooms" />
-              <Bar dataKey="spa" fill="#B45309" radius={[3, 3, 0, 0]} name="Spa" />
-              <Bar dataKey="dining" fill="#D97706" radius={[3, 3, 0, 0]} name="Dining" />
-              <Bar dataKey="activities" fill="#F59E0B" radius={[3, 3, 0, 0]} name="Activities" />
+      <div className="grid grid-cols-1 lg:grid-cols-[2fr_1fr] gap-6 mb-8">
+        <div className="bg-black/20 backdrop-blur-md border border-white/10 rounded-3xl p-5 md:p-8 shadow-2xl overflow-x-auto">
+          <div className="flex items-center justify-between mb-8">
+            <div className="text-base font-bold text-white">Revenue by Service Line</div>
+            <div className="text-[10px] font-black text-kuriftu-300 uppercase tracking-widest bg-white/5 px-3 py-1 rounded-full border border-white/10 whitespace-nowrap hidden sm:block">Yearly Distribution</div>
+          </div>
+          <ResponsiveContainer width="100%" height={280}>
+            <BarChart data={REVENUE_DATA} barSize={14} barGap={4}>
+              <CartesianGrid strokeDasharray="4 4" stroke="rgba(255,255,255,0.05)" vertical={false} />
+              <XAxis dataKey="month" tick={{ fontSize: 10, fill: "rgba(255,255,255,0.4)", fontWeight: 'bold' }} axisLine={false} tickLine={false} />
+              <YAxis tick={{ fontSize: 10, fill: "rgba(255,255,255,0.4)", fontWeight: 'bold' }} axisLine={false} tickLine={false} tickFormatter={(v) => `$${v}`} />
+              <Tooltip 
+                cursor={{ fill: 'rgba(255,255,255,0.03)' }}
+                contentStyle={{ backgroundColor: "#07130c", border: "1px solid rgba(255,255,255,0.1)", borderRadius: "16px", boxShadow: "0 20px 40px rgba(0,0,0,0.4)" }} 
+                itemStyle={{ color: '#fff', fontSize: '11px', fontWeight: 'bold' }}
+              />
+              <Bar dataKey="rooms" fill="#CA8A04" radius={[4, 4, 0, 0]} name="Rooms" />
+              <Bar dataKey="spa" fill="#A16207" radius={[4, 4, 0, 0]} name="Spa" />
+              <Bar dataKey="dining" fill="#854D0E" radius={[4, 4, 0, 0]} name="Dining" />
+              <Bar dataKey="activities" fill="#713F12" radius={[4, 4, 0, 0]} name="Activities" />
             </BarChart>
           </ResponsiveContainer>
         </div>
 
-        <div className="bg-white border border-sand-200 rounded-lg p-5">
-          <div className="text-sm font-semibold text-kuriftu-900 mb-4">Guest Segments</div>
-          <ResponsiveContainer width="100%" height={180}>
-            <PieChart>
-              <Pie data={GUEST_SEGMENTS} cx="50%" cy="50%" innerRadius={45} outerRadius={72} paddingAngle={3} dataKey="value">
-                {GUEST_SEGMENTS.map((entry, i) => (
-                  <Cell key={i} fill={entry.color} />
-                ))}
-              </Pie>
-              <Tooltip contentStyle={{ fontSize: "12px", borderRadius: "6px", border: "1px solid #e7e0d8" }} />
-            </PieChart>
-          </ResponsiveContainer>
-          <div className="flex flex-wrap gap-2 justify-center">
-            {GUEST_SEGMENTS.map((s, i) => (
-              <div key={i} className="flex items-center gap-1 text-[11px] text-sand-600">
-                <div className="w-2 h-2 rounded-full" style={{ background: s.color }} />
-                {s.name}
-              </div>
-            ))}
+        <div className="bg-black/20 backdrop-blur-md border border-white/10 rounded-3xl p-5 md:p-8 shadow-2xl flex flex-col">
+          <div className="text-base font-bold text-white mb-2">Guest Segments</div>
+          <div className="text-[10px] font-black text-kuriftu-300 uppercase tracking-widest mb-6 block opacity-50">Demographic Split</div>
+          <div className="flex-1 flex flex-col justify-center overflow-hidden">
+            <ResponsiveContainer width="100%" height={200}>
+              <PieChart>
+                <Pie data={GUEST_SEGMENTS} cx="50%" cy="50%" innerRadius={55} outerRadius={85} paddingAngle={4} dataKey="value" stroke="none">
+                  {GUEST_SEGMENTS.map((entry, i) => (
+                    <Cell key={i} fill={entry.color} />
+                  ))}
+                </Pie>
+                <Tooltip contentStyle={{ backgroundColor: "#07130c", border: "1px solid rgba(255,255,255,0.1)", borderRadius: "12px" }} />
+              </PieChart>
+            </ResponsiveContainer>
+            <div className="mt-8 grid grid-cols-2 gap-y-3 gap-x-4">
+              {GUEST_SEGMENTS.map((s, i) => (
+                <div key={i} className="flex items-center gap-2 text-[10px] text-white/60 font-bold uppercase tracking-wide">
+                  <div className="w-2.5 h-2.5 rounded-full shadow-lg" style={{ background: s.color }} />
+                  {s.name}
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        <div className="bg-white border border-sand-200 rounded-lg p-5">
-          <div className="text-sm font-semibold text-kuriftu-900 mb-4">Occupancy Forecast (AI Predicted)</div>
-          <ResponsiveContainer width="100%" height={200}>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 pb-20">
+        <div className="bg-black/20 backdrop-blur-md border border-white/10 rounded-3xl p-5 md:p-8 shadow-2xl overflow-x-auto">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-8 gap-4">
+             <div className="text-base font-bold text-white">Occupancy Engine <span className="text-[10px] font-black text-kuriftu-300 ml-2 uppercase tracking-[0.2em] block sm:inline mt-1 sm:mt-0">AI Predicted</span></div>
+          </div>
+          <ResponsiveContainer width="100%" height={240}>
             <AreaChart data={OCCUPANCY_FORECAST}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#f0ebe4" vertical={false} />
-              <XAxis dataKey="day" tick={{ fontSize: 12, fill: "#8c7e6f" }} axisLine={false} tickLine={false} />
-              <YAxis tick={{ fontSize: 12, fill: "#8c7e6f" }} axisLine={false} tickLine={false} domain={[60, 100]} tickFormatter={(v) => `${v}%`} />
-              <Tooltip contentStyle={{ fontSize: "12px", borderRadius: "6px", border: "1px solid #e7e0d8" }} />
-              <Area type="monotone" dataKey="predicted" stroke="#B45309" fill="rgba(180,83,9,0.08)" strokeWidth={2} strokeDasharray="6 3" name="AI Predicted" />
-              <Area type="monotone" dataKey="actual" stroke="#92400e" fill="rgba(146,64,14,0.08)" strokeWidth={2} name="Actual" />
+              <defs>
+                <linearGradient id="predictedGrad" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor="#CA8A04" stopOpacity={0.3}/>
+                  <stop offset="95%" stopColor="#CA8A04" stopOpacity={0}/>
+                </linearGradient>
+              </defs>
+              <CartesianGrid strokeDasharray="4 4" stroke="rgba(255,255,255,0.05)" vertical={false} />
+              <XAxis dataKey="day" tick={{ fontSize: 10, fill: "rgba(255,255,255,0.4)", fontWeight: 'bold' }} axisLine={false} tickLine={false} />
+              <YAxis tick={{ fontSize: 10, fill: "rgba(255,255,255,0.4)", fontWeight: 'bold' }} axisLine={false} tickLine={false} domain={[60, 100]} tickFormatter={(v) => `${v}%`} />
+              <Tooltip contentStyle={{ backgroundColor: "#07130c", border: "1px solid rgba(255,255,255,0.1)", borderRadius: "12px" }} />
+              <Area type="monotone" dataKey="predicted" stroke="#CA8A04" fill="url(#predictedGrad)" strokeWidth={3} strokeDasharray="6 4" name="AI Logic" />
+              <Area type="monotone" dataKey="actual" stroke="#fff" fill="rgba(255,255,255,0.05)" strokeWidth={3} name="Current" />
             </AreaChart>
           </ResponsiveContainer>
         </div>
 
-        <div className="bg-white border border-sand-200 rounded-lg p-5">
-          <div className="text-sm font-semibold text-kuriftu-900 mb-3">Location Performance</div>
-          <div className="flex flex-col gap-2">
+        <div className="bg-black/20 backdrop-blur-md border border-white/10 rounded-3xl p-5 md:p-8 shadow-2xl">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-8 gap-4">
+            <h3 className="text-base font-bold text-white flex items-center gap-2">Location Performance</h3>
+            <span className="text-[10px] font-black text-kuriftu-300 uppercase tracking-widest bg-white/5 px-3 py-1 rounded-full border border-white/10 self-start sm:self-auto hidden sm:block">All Regions</span>
+          </div>
+          <div className="flex flex-col gap-3">
             {LOCATIONS.map((loc) => (
               <LocationCard key={loc.id} location={loc} />
             ))}

@@ -12,8 +12,21 @@ const STATUS_CONFIG = {
   confirmed: { label: "Confirmed", bg: "bg-blue-50", text: "text-blue-700", dot: "bg-blue-500" },
   pending: { label: "Pending", bg: "bg-amber-50", text: "text-amber-700", dot: "bg-amber-500" },
   checkout_today: { label: "Checkout Today", bg: "bg-red-50", text: "text-red-700", dot: "bg-red-500" },
-  cancelled: { label: "Cancelled", bg: "bg-red-50", text: "text-red-700", dot: "bg-red-500" },
 };
+
+const MOCK_ADMIN_BOOKINGS = [
+  { id: "B-2941", guest: "Amanuel T.", resort: "Bishoftu", room: "Lakeside Suite", status: "confirmed", checkIn: "2026-04-15", checkOut: "2026-04-18", amount: 840, submittedAt: "2026-04-10T10:00:00Z" },
+  { id: "B-3012", guest: "Selam W.", resort: "Entoto", room: "Forest Bungalow", status: "confirmed", checkIn: "2026-05-20", checkOut: "2026-05-23", amount: 720, submittedAt: "2026-04-11T14:30:00Z" },
+  { id: "B-3105", guest: "Dawit G.", resort: "Langano", room: "Family Cabin", status: "confirmed", checkIn: "2026-06-12", checkOut: "2026-06-15", amount: 585, submittedAt: "2026-04-12T09:15:00Z" },
+  { id: "B-A101", guest: "Helen K.", resort: "Bishoftu", room: "Standard Room", status: "completed", checkIn: "2025-05-10", checkOut: "2025-05-12", amount: 240, submittedAt: "2025-05-01T11:00:00Z" },
+  { id: "B-A102", guest: "Yonas B.", resort: "Bahir Dar", room: "Forest Bungalow", status: "completed", checkIn: "2025-04-20", checkOut: "2025-04-23", amount: 720, submittedAt: "2025-04-10T16:20:00Z" },
+  { id: "B-A103", guest: "Martha S.", resort: "Adama", room: "Family Cabin", status: "completed", checkIn: "2025-03-15", checkOut: "2025-03-18", amount: 585, submittedAt: "2025-03-01T08:45:00Z" },
+  { id: "B-H201", guest: "Samuel L.", resort: "Entoto", room: "Lakeside Suite", status: "confirmed", checkIn: "2027-03-10", checkOut: "2027-03-13", amount: 840, submittedAt: "2026-04-13T12:00:00Z" },
+  { id: "B-H203", guest: "Biniam A.", resort: "Bishoftu", room: "Presidential Suite", status: "confirmed", checkIn: "2027-05-20", checkOut: "2027-05-24", amount: 2600, submittedAt: "2026-04-13T15:30:00Z" },
+  { id: "B-H205", guest: "Tigist M.", resort: "Bahir Dar", room: "Forest Bungalow", status: "confirmed", checkIn: "2027-07-10", checkOut: "2027-07-13", amount: 720, submittedAt: "2026-04-13T17:45:00Z" },
+  { id: "B-2837", guest: "Elias T.", resort: "African Village", room: "Presidential Suite", status: "completed", checkIn: "2026-03-01", checkOut: "2026-03-04", amount: 1950, submittedAt: "2026-02-20T10:00:00Z" },
+  { id: "B-2751", guest: "Rahel K.", resort: "Bahir Dar", room: "Standard Room", status: "completed", checkIn: "2026-02-15", checkOut: "2026-02-17", amount: 240, submittedAt: "2026-02-01T14:30:00Z" },
+];
 
 export default function BookingsView() {
   const [bookings, setBookings] = useState([]);
@@ -24,7 +37,8 @@ export default function BookingsView() {
   const [selectedBooking, setSelectedBooking] = useState(null);
 
   useEffect(() => {
-    const data = loadBookings() || [];
+    const saved = loadBookings() || [];
+    const data = saved.length > 0 ? [...saved, ...MOCK_ADMIN_BOOKINGS] : MOCK_ADMIN_BOOKINGS;
     setBookings(data);
     // If there are pending bookings, default to that tab
     if (data.some(b => b.status === "pending")) {
@@ -84,13 +98,13 @@ export default function BookingsView() {
 
   return (
     <div className="p-6 lg:p-8 max-w-[1200px] mx-auto animate-fade-in">
-      <div className="flex items-center justify-between mb-7">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-7 gap-4">
         <div>
-          <h1 className="text-[26px] font-bold text-kuriftu-900 tracking-tight" style={{ fontFamily: "Georgia, serif" }}>Booking Control</h1>
+          <h1 className="text-2xl md:text-[26px] font-bold text-kuriftu-900 tracking-tight" style={{ fontFamily: "Georgia, serif" }}>Booking Control</h1>
           <p className="text-sm text-sand-500 mt-1">Review requests, manage availability, and oversee guest journeys.</p>
         </div>
         <div className="flex gap-3">
-           <button className="px-4 py-2 rounded-xl bg-white border border-sand-200 text-kuriftu-700 text-xs font-bold hover:bg-sand-50 transition-all flex items-center gap-2">
+           <button className="w-full sm:w-auto px-4 py-2.5 rounded-xl bg-white border border-sand-200 text-kuriftu-700 text-xs font-bold hover:bg-sand-50 transition-all flex items-center justify-center gap-2 shadow-sm">
              <Icons.analytics className="w-4 h-4" /> Reports
            </button>
         </div>
@@ -104,11 +118,11 @@ export default function BookingsView() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-[1fr] gap-6">
-        <div className="bg-white border border-sand-200 rounded-2xl p-6 shadow-sm">
-          <div className="flex flex-col md:flex-row md:items-center justify-between mb-6 gap-4">
-            <div className="flex items-center gap-4">
+        <div className="bg-white border border-sand-200 rounded-2xl p-4 md:p-6 shadow-sm overflow-hidden">
+          <div className="flex flex-col xl:flex-row xl:items-center justify-between mb-6 gap-6">
+            <div className="flex flex-col md:flex-row md:items-center gap-4">
               <h2 className="text-lg font-bold text-kuriftu-900">Reservations</h2>
-              <div className="flex bg-sand-50 p-1 rounded-xl border border-sand-100">
+              <div className="flex bg-sand-50 p-1 rounded-xl border border-sand-100 overflow-x-auto scrollbar-hide no-scrollbar">
                 {[
                   { id: "pending", label: "Pending", count: pendingCount },
                   { id: "confirmed", label: "Confirmed", count: arriving },
@@ -117,7 +131,7 @@ export default function BookingsView() {
                   <button 
                     key={f.id} 
                     onClick={() => setStatusFilter(f.id)} 
-                    className={`px-4 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-2 ${statusFilter === f.id ? "bg-white text-kuriftu-700 shadow-sm" : "text-sand-400 hover:text-sand-600"}`}
+                    className={`whitespace-nowrap px-4 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-2 ${statusFilter === f.id ? "bg-white text-kuriftu-700 shadow-sm" : "text-sand-400 hover:text-sand-600"}`}
                   >
                     {f.label}
                     {f.count > 0 && <span className={`px-1.5 py-0.5 rounded-full text-[9px] ${statusFilter === f.id ? "bg-kuriftu-700 text-white" : "bg-sand-200 text-sand-500"}`}>{f.count}</span>}
@@ -125,10 +139,11 @@ export default function BookingsView() {
                 ))}
               </div>
             </div>
-            <SearchInput value={search} onChange={setSearch} placeholder="Search guest, resort..." className="w-full md:w-64" />
+            <SearchInput value={search} onChange={setSearch} placeholder="Search guest, resort..." className="w-full xl:w-64" />
           </div>
 
-          <div className="overflow-x-auto">
+          {/* Desktop Table */}
+          <div className="hidden md:block overflow-x-auto scrollbar-hide">
             <table className="w-full border-collapse text-sm">
               <thead>
                 <tr className="border-b border-sand-100 text-left">

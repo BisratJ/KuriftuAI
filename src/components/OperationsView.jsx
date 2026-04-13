@@ -72,9 +72,9 @@ export default function OperationsView() {
 
   return (
     <div className="p-6 lg:p-8 max-w-[1200px] mx-auto animate-fade-in">
-      <div className="mb-7 flex justify-between items-end">
+      <div className="mb-7 flex flex-col sm:flex-row sm:justify-between sm:items-end gap-4">
         <div>
-          <h1 className="text-[26px] font-bold text-kuriftu-900 tracking-tight" style={{ fontFamily: "Georgia, serif" }}>Operations Hub</h1>
+          <h1 className="text-2xl md:text-[26px] font-bold text-kuriftu-900 tracking-tight" style={{ fontFamily: "Georgia, serif" }}>Operations Hub</h1>
           <p className="text-sm text-sand-500 mt-1">Real-time task management, guest activities, and AI-driven operations</p>
         </div>
       </div>
@@ -118,10 +118,10 @@ export default function OperationsView() {
           )}
 
           {/* Task Board */}
-          <div className="bg-white border border-sand-200 rounded-2xl p-6 shadow-sm">
-            <div className="flex items-center justify-between mb-6">
+          <div className="bg-white border border-sand-200 rounded-2xl p-4 md:p-6 shadow-sm overflow-hidden">
+            <div className="flex flex-col md:flex-row md:items-center justify-between mb-6 gap-4">
               <h2 className="text-lg font-bold text-kuriftu-900">Live Task Board</h2>
-              <SearchInput value={search} onChange={setSearch} placeholder="Search tasks..." className="w-48" />
+              <SearchInput value={search} onChange={setSearch} placeholder="Search tasks..." className="w-full md:w-48" />
             </div>
             <div className="flex gap-1.5 mb-6 overflow-x-auto no-scrollbar pb-2">
               {[{ id: "all", label: "All" }, { id: "pending", label: "Pending" }, { id: "in_progress", label: "Active" }, { id: "completed", label: "Done" }, { id: "ai", label: "AI" }].map((f) => (

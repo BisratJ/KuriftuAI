@@ -855,7 +855,7 @@ export default function LandingPage({ onLogin }) {
       {authMode && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
           <div
-            className="absolute inset-0 bg-black/70 backdrop-blur-md"
+            className="absolute inset-0 bg-black/80"
             onClick={closeAuth}
           />
           <div className="relative w-full max-w-[440px] bg-white rounded-2xl shadow-2xl overflow-hidden animate-scale-in">
@@ -895,11 +895,11 @@ export default function LandingPage({ onLogin }) {
             {/* Form */}
             <form
               onSubmit={authMode === "signin" ? handleSignIn : handleSignUp}
-              className={`px-6 pb-6 space-y-4 transition-all duration-500 ${focusedInput ? "blur-[0.5px]" : ""}`}
+              className="px-6 pb-6 space-y-4 transition-all duration-500"
             >
               {authMode === "signup" && (
                 <div className="space-y-4">
-                  <div className={`transition-all duration-300 ${focusedInput && focusedInput !== 'name' ? 'opacity-40 blur-[1px]' : ''}`}>
+                  <div className="transition-all duration-300">
                     <label className="block text-xs font-bold text-sand-600 uppercase tracking-wider mb-1.5">
                       Full Name
                     </label>
@@ -914,7 +914,7 @@ export default function LandingPage({ onLogin }) {
                       className="w-full px-4 py-3 rounded-xl border border-sand-200 bg-sand-50 text-kuriftu-900 text-sm focus:border-kuriftu-500 focus:ring-2 focus:ring-kuriftu-200 transition-all placeholder:text-sand-300"
                     />
                   </div>
-                  <div className={`transition-all duration-300 ${focusedInput && focusedInput !== 'phone' ? 'opacity-40 blur-[1px]' : ''}`}>
+                  <div className="transition-all duration-300">
                     <label className="block text-xs font-bold text-sand-600 uppercase tracking-wider mb-1.5">
                       Phone Number
                     </label>
@@ -932,7 +932,7 @@ export default function LandingPage({ onLogin }) {
                 </div>
               )}
 
-              <div className={`transition-all duration-300 ${focusedInput && focusedInput !== 'email' ? 'opacity-40 blur-[1px]' : ''}`}>
+              <div className="transition-all duration-300">
                 <label className="block text-xs font-bold text-sand-600 uppercase tracking-wider mb-1.5">
                   Email Address
                 </label>
@@ -948,7 +948,7 @@ export default function LandingPage({ onLogin }) {
                 />
               </div>
 
-              <div className={`transition-all duration-300 ${focusedInput && focusedInput !== 'password' ? 'opacity-40 blur-[1px]' : ''}`}>
+              <div className="transition-all duration-300">
                 <label className="block text-xs font-bold text-sand-600 uppercase tracking-wider mb-1.5">
                   Password
                 </label>
@@ -965,7 +965,7 @@ export default function LandingPage({ onLogin }) {
               </div>
 
               {authMode === "signup" && (
-                <div className={`transition-all duration-300 ${focusedInput && focusedInput !== 'confirm' ? 'opacity-40 blur-[1px]' : ''}`}>
+                <div className="transition-all duration-300">
                   <label className="block text-xs font-bold text-sand-600 uppercase tracking-wider mb-1.5">
                     Confirm Password
                   </label>
