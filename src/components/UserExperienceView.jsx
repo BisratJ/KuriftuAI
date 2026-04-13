@@ -597,6 +597,8 @@ export default function UserExperienceView({ section = "user-home", userData, up
           <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-8">
             <div className="max-w-xl">
               <div className="inline-flex items-center gap-2 bg-kuriftu-300/20 text-kuriftu-300 px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-[0.25em] mb-6 border border-kuriftu-300/30">
+                Signature Experiences
+              </div>
               <h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-4" style={{ fontFamily: "Georgia, serif" }}>Unforgettable Moments</h1>
               <p className="text-white text-lg font-medium italic">
                 Tailored activities to connect you with the heritage and nature of Kuriftu.
