@@ -135,7 +135,7 @@ function BookingModal({ onClose, onConfirm, guestName }) {
               <h2 className="text-2xl font-bold text-kuriftu-900" style={{ fontFamily: "Georgia, serif" }}>
                 {step === 1 ? "Choose Your Resort" : step === 2 ? "Select Dates & Room" : "Confirm Booking"}
               </h2>
-              <p className="text-sand-500 text-sm mt-1">
+              <p className="text-sand-700 text-sm mt-1">
                 {step === 1 ? "Pick a Kuriftu destination for your stay" : step === 2 ? "Set your travel dates and accommodation" : "Your booking will be sent for confirmation"}
               </p>
             </div>
@@ -597,10 +597,8 @@ export default function UserExperienceView({ section = "user-home", userData, up
           <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-8">
             <div className="max-w-xl">
               <div className="inline-flex items-center gap-2 bg-kuriftu-300/20 text-kuriftu-300 px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-[0.25em] mb-6 border border-kuriftu-300/30">
-                Signature Experiences
-              </div>
               <h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-4" style={{ fontFamily: "Georgia, serif" }}>Unforgettable Moments</h1>
-              <p className="text-white/80 text-lg font-medium italic">
+              <p className="text-white text-lg font-medium italic">
                 Tailored activities to connect you with the heritage and nature of Kuriftu.
               </p>
             </div>
@@ -663,7 +661,7 @@ export default function UserExperienceView({ section = "user-home", userData, up
                          <div className="text-[9px] font-bold text-kuriftu-600 bg-kuriftu-50 px-2 py-1 rounded">Heritage XP</div>
                       </div>
                       
-                      <p className={`text-[11px] text-sand-600 leading-relaxed font-medium ${expandedCard === activity.id ? '' : 'line-clamp-3'}`}>{activity.short}</p>
+                      <p className={`text-xs text-kuriftu-900/80 leading-relaxed font-medium ${expandedCard === activity.id ? '' : 'line-clamp-3'}`}>{activity.short}</p>
                       
                       <div className="flex flex-wrap gap-2 pt-1">
                          <span className="px-2 py-0.5 rounded bg-sand-100 text-[8px] font-black text-sand-600 uppercase tracking-widest">{activity.loc}</span>
@@ -956,7 +954,7 @@ export default function UserExperienceView({ section = "user-home", userData, up
               <h1 className="text-4xl md:text-6xl font-bold tracking-tight mb-2" style={{ fontFamily: "Georgia, serif" }}>
                 Welcome back, <span className="text-kuriftu-200">{userData.name.split(" ")[0]}</span>
               </h1>
-              <p className="text-white/80 text-lg font-medium italic">
+              <p className="text-white text-lg font-medium italic">
                 Experience the heritage of Kuriftu luxury.
               </p>
             </div>
@@ -1030,12 +1028,12 @@ export default function UserExperienceView({ section = "user-home", userData, up
                   <div className="flex items-center justify-between pt-6 border-t border-sand-100">
                     <div className="flex items-center gap-3">
                       <StatusBadge status={upcomingBooking.status} />
-                      <div className="text-[10px] font-bold text-sand-400 uppercase tracking-widest">Confirmed</div>
+                      <div className="text-xs font-bold text-kuriftu-700 uppercase tracking-widest">Confirmed</div>
                     </div>
                     <button onClick={() => setManagingBooking(upcomingBooking)}
-                      className="px-8 py-3.5 rounded-xl bg-kuriftu-900 text-white text-xs font-black hover:bg-kuriftu-800 transition-all shadow-xl active:scale-95 group flex items-center gap-2">
+                      className="px-8 py-4 rounded-xl bg-kuriftu-900 text-white text-sm font-black hover:bg-kuriftu-800 transition-all shadow-xl active:scale-95 group flex items-center gap-2">
                       Manage Booking
-                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="group-hover:translate-x-1 transition-transform"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="group-hover:translate-x-1 transition-transform"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
                     </button>
                   </div>
                 </div>
@@ -1268,34 +1266,34 @@ function BookingCard({ booking, onManage, past }) {
         <div className="flex-1 p-5 flex flex-col justify-between">
           <div className="space-y-3">
             <div>
-              <div className="text-[8px] font-black text-sand-500 uppercase tracking-widest mb-1">Accommodation</div>
-              <div className="text-[13px] font-bold text-kuriftu-900 truncate">{booking.room}</div>
+              <div className="text-[9px] font-black text-sand-600 uppercase tracking-widest mb-1.5">Accommodation</div>
+              <div className="text-sm font-bold text-kuriftu-900 truncate">{booking.room}</div>
             </div>
 
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-2 gap-4">
               <div>
-                <div className="text-[8px] font-black text-sand-500 uppercase tracking-widest mb-1">In</div>
-                <div className="text-[10px] font-black text-kuriftu-800">{formatDate(booking.checkIn)}</div>
+                <div className="text-[9px] font-black text-sand-600 uppercase tracking-widest mb-1.5">Check-in</div>
+                <div className="text-xs font-black text-kuriftu-900">{formatDate(booking.checkIn)}</div>
               </div>
               <div>
-                <div className="text-[8px] font-black text-sand-500 uppercase tracking-widest mb-1">Out</div>
-                <div className="text-[10px] font-black text-kuriftu-800">{formatDate(booking.checkOut)}</div>
+                <div className="text-[9px] font-black text-sand-600 uppercase tracking-widest mb-1.5">Check-out</div>
+                <div className="text-xs font-black text-kuriftu-900">{formatDate(booking.checkOut)}</div>
               </div>
             </div>
           </div>
 
           <div className="mt-auto">
             {expanded ? (
-              <div className="pt-4 animate-fade-in space-y-3">
-                 <div className="flex justify-between items-end border-t border-sand-200 pt-3">
+              <div className="pt-4 animate-fade-in space-y-4">
+                 <div className="flex justify-between items-end border-t border-sand-300 pt-4">
                     <div>
-                      <div className="text-[8px] font-black text-sand-500 uppercase tracking-widest mb-1">Amount</div>
-                      <div className="text-sm font-black text-kuriftu-700">${booking.amount.toLocaleString()}</div>
+                      <div className="text-[9px] font-black text-sand-600 uppercase tracking-widest mb-1">Total Bill</div>
+                      <div className="text-base font-black text-kuriftu-800">${booking.amount.toLocaleString()}</div>
                     </div>
                  </div>
                  <button onClick={(e) => { e.stopPropagation(); onManage(); }}
-                   className="w-full py-2.5 rounded-lg bg-kuriftu-900 text-white text-[9px] font-black uppercase tracking-widest hover:bg-kuriftu-800 transition-all">
-                   Manage trip
+                   className="w-full py-3.5 rounded-xl bg-kuriftu-900 text-white text-[10px] font-black uppercase tracking-widest hover:bg-kuriftu-800 transition-all shadow-lg active:scale-95">
+                   Manage Reservation
                  </button>
               </div>
             ) : (
